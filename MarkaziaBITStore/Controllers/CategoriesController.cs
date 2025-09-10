@@ -4,6 +4,8 @@ using MarkaziaBITStore.Application.Contracts.User;
 using MarkaziaBITStore.Application.Entites;
 using MarkaziaBITStore.RequestDTOs;
 using MarkaziaBITStore.ResponseDTOs;
+using MarkaziaWebCommon.Utils.CustomAttribute;
+using MarkaziaWebCommon.Utils.Enums.AppRoles;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -19,12 +21,14 @@ namespace MarkaziaBITStore.Controllers
         private readonly ICategory _categoryService;
         private readonly ICurrentUserService _currentUser;
         private readonly int currentUserID;
+        private readonly ILogger<CategoriesController> _logger;
 
-        public CategoriesController(ICategory categoryService, ICurrentUserService currentUser)
+        public CategoriesController(ICategory categoryService, ICurrentUserService currentUser, ILogger<CategoriesController> logger)
         {
             _categoryService = categoryService;
             _currentUser = currentUser;
             currentUserID = _currentUser.GetUserId();
+            _logger = logger;
         }
 
 
@@ -32,12 +36,27 @@ namespace MarkaziaBITStore.Controllers
         public async Task<IActionResult> GetAll()
         {
             //Should use pagination for large data sets here 
-
             var categories = await _categoryService
                 .GetByListAsync(c => c.BitCatIsActive, true, false, c => c.BitItmItems);
 
-            return Ok(categories);
+            var result = categories.Select(c => new
+            {
+                c.BitCatId,
+                c.BitCatNameEn,
+                c.BitCatNameAr,
+                c.BitCatIconUrl,
+                c.BitCatIsActive,
+                Items = c.BitItmItems.Select(i => new {
+                    i.BitItmId,
+                    i.BitItmNameEn,
+                    i.BitItmNameAr,
+                    i.BitItmPoints
+                })
+            });
+
+            return Ok(result);
         }
+
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)

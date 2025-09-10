@@ -96,8 +96,7 @@ namespace MarkaziaBITStore.Controllers
                 Id = addedColor.BitColId,
                 NameEn = addedColor.BitColNameEn,
                 NameAr = addedColor.BitColNameAr,
-                HexCode = addedColor.BitColHexCode,
-                ItemsColors = new List<ItemColorResponseDto>()
+                HexCode = addedColor.BitColHexCode
             };
 
             return CreatedAtAction(nameof(GetById), new { id = addedColor.BitColId }, response);

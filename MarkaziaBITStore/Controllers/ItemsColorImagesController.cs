@@ -1,4 +1,5 @@
-﻿using MarkaziaBITStore.Application.Contracts.User;
+﻿using MarkaziaBITStore.Application.Contracts;
+using MarkaziaBITStore.Application.Contracts.User;
 using MarkaziaBITStore.Application.Entites;
 using MarkaziaBITStore.Application.Services;
 using MarkaziaBITStore.RequestDTOs;
@@ -13,10 +14,10 @@ namespace MarkaziaBITStore.Controllers
     [Route("api/[controller]")]
     public class ItemsColorImagesController : Controller
     {
-        private readonly ItemColorImageService _itemColorImageService;
+        private readonly IitemsColorImage _itemColorImageService;
         private readonly ICurrentUserService _currentUser;
         private readonly int currentUserID;
-        public ItemsColorImagesController(ItemColorImageService itemColorImageService, 
+        public ItemsColorImagesController(IitemsColorImage itemColorImageService, 
             ICurrentUserService currentUser)
         {
             _itemColorImageService = itemColorImageService;

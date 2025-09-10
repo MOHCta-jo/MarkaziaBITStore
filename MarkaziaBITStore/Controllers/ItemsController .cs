@@ -6,6 +6,7 @@ using MarkaziaBITStore.RequestDTOs;
 using MarkaziaBITStore.ResponseDTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using static Grpc.Core.Metadata;
 
 namespace MarkaziaBITStore.Controllers
 {
@@ -13,11 +14,11 @@ namespace MarkaziaBITStore.Controllers
     [Route("api/[controller]")]
     public class ItemsController : Controller
     {
-        private readonly ItemService _itemService;
+        private readonly Iitem _itemService;
         private readonly IitemColor _itemColorService;
         private readonly ICurrentUserService _currentUser;
         private readonly int currentUserID;
-        public ItemsController(ItemService itemService, IitemColor itemColorService, ICurrentUserService currentUser)
+        public ItemsController(Iitem itemService, IitemColor itemColorService, ICurrentUserService currentUser)
         {
             _itemService = itemService;
             _itemColorService = itemColorService;
@@ -32,13 +33,43 @@ namespace MarkaziaBITStore.Controllers
             //should using pagination here
 
             var items =  _itemService.GetAllAsQueryable()
+                   .Include(i => i.BitItcItemsColors)
+                    .ThenInclude(ic => ic.BitItcBitCol)
                 .Include(i => i.BitItcItemsColors)
-                .ThenInclude(ic => ic.BitIciItemsColorImages)
+                    .ThenInclude(ic => ic.BitIciItemsColorImages)
+                .Include(i => i.BitItmBitCat)
                 .ToList();
 
             if (items == null) return NotFound();
 
-            return Ok(items);
+            var result = items
+                .Select(i => new ItemResponseDto
+                {
+                    Id = i.BitItmId,
+                    NameEn = i.BitItmNameEn,
+                    NameAr = i.BitItmNameAr,
+                    Points = i.BitItmPoints,
+                    Colors = i.BitItcItemsColors.Select(c => new ItemColorResponseDto
+                    {
+                        Id = c.BitItcId,
+                        Status = c.BitItcStatus,
+                        Color = new ColorResponseDto
+                        {
+                            Id = c.BitItcBitCol.BitColId,
+                            NameEn = c.BitItcBitCol.BitColNameEn,
+                            NameAr = c.BitItcBitCol.BitColNameAr,
+                            HexCode = c.BitItcBitCol.BitColHexCode
+                        },
+                        Images = c.BitIciItemsColorImages.Select(img => new ItemColorImageResponseDto
+                        {
+                            Id = img.BitIciId,
+                            ImageUrl = img.BitIciImageUrl,
+                            IsDefault = img.BitIciIsDefault
+                        }).ToList()
+                    }).ToList()
+                });
+
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
@@ -46,9 +77,12 @@ namespace MarkaziaBITStore.Controllers
         {
             var entity = await _itemService.GetBy(
                 x => x.BitItmId == id,
-                include: q => q.Include(i => i.BitItcItemsColors)
-                                         .ThenInclude(ic => ic.BitIciItemsColorImages)
-                                         .Include(i => i.BitItmBitCat)
+                include: q => q
+                .Include(i => i.BitItcItemsColors)
+                    .ThenInclude(ic => ic.BitItcBitCol)
+                .Include(i => i.BitItcItemsColors)
+                    .ThenInclude(ic => ic.BitIciItemsColorImages)
+                .Include(i => i.BitItmBitCat)
             );
 
             if (entity == null) return NotFound();
@@ -123,16 +157,7 @@ namespace MarkaziaBITStore.Controllers
                 DescriptionEn = addedItem.BitItmDescriptionEn,
                 DescriptionAr = addedItem.BitItmDescriptionAr,
                 Points = addedItem.BitItmPoints,
-                Status = addedItem.BitItmStatus,
-                Category = new CategoryResponseDto
-                {
-                    Id = addedItem.BitItmBitCat.BitCatId,
-                    NameEn = addedItem.BitItmBitCat.BitCatNameEn,
-                    NameAr = addedItem.BitItmBitCat.BitCatNameAr,
-                    IconUrl = addedItem.BitItmBitCat.BitCatIconUrl,
-                    IsActive = addedItem.BitItmBitCat.BitCatIsActive
-                },
-                Colors = new List<ItemColorResponseDto>()
+                Status = addedItem.BitItmStatus
             };
 
             return CreatedAtAction(nameof(GetById), new { id = addedItem.BitItmId }, response);

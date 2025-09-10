@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Serilog;
 using System.Text;
 
 namespace MarkaziaBITStore;
@@ -94,6 +95,8 @@ public class Program
         //    c.AddSecurityRequirement(requirement);
         //});
 
+        builder.Host.UseSerilog((ctx, lc) =>
+        lc.ReadFrom.Configuration(ctx.Configuration));
 
         //VSwaggerConfiguration.AddVSwaggerWebBuilder(builder);//TODO : Question
         builder.Services.AddHttpContextAccessor();

@@ -13,16 +13,18 @@ namespace MarkaziaBITStore.Controllers
     [Route("api/[controller]")]
     public class ItemsColorsController : Controller
     {
-        private readonly ItemColorService _itemColorService;
-        private readonly ItemColorImageService _itemColorImageService;
+        private readonly IitemColor _itemColorService;
+        private readonly IitemsColorImage _itemColorImageService;
         private readonly ICurrentUserService _currentUser;
         private readonly int currentUserID;
 
-        public ItemsColorsController(ItemColorService itemColorService, ICurrentUserService currentUser)
+        public ItemsColorsController(IitemColor itemColorService, ICurrentUserService currentUser, 
+            IitemsColorImage itemColorImageService)
         {
             _itemColorService = itemColorService;
             _currentUser = currentUser;
             currentUserID = _currentUser.GetUserId();
+            _itemColorImageService = itemColorImageService;
         }
 
 
@@ -37,7 +39,37 @@ namespace MarkaziaBITStore.Controllers
                 .Include(ic => ic.BitIciItemsColorImages)
                 .ToListAsync();
 
-            return Ok(list);
+            var result =  list.Select(ic => new ItemColorResponseDto
+            {
+                Id = ic.BitItcId,
+                Status = ic.BitItcStatus,
+                Item = new ItemResponseDto
+                {
+                    Id = ic.BitItcBitItm.BitItmId,
+                    NameEn = ic.BitItcBitItm.BitItmNameEn,
+                    NameAr = ic.BitItcBitItm.BitItmNameAr,
+                    DescriptionEn = ic.BitItcBitItm.BitItmDescriptionEn,
+                    DescriptionAr = ic.BitItcBitItm.BitItmDescriptionAr,
+                    Points = ic.BitItcBitItm.BitItmPoints,
+                    Status = ic.BitItcBitItm.BitItmStatus
+                },
+                Color = new ColorResponseDto
+                {
+                    Id = ic.BitItcBitCol.BitColId,
+                    NameEn = ic.BitItcBitCol.BitColNameEn,
+                    NameAr = ic.BitItcBitCol.BitColNameAr,
+                    HexCode = ic.BitItcBitCol.BitColHexCode
+                },
+                Images = ic.BitIciItemsColorImages.Select(img => new ItemColorImageResponseDto
+                {
+                    Id = img.BitIciId,
+                    ImageUrl = img.BitIciImageUrl,
+                    IsDefault = img.BitIciIsDefault,
+                    Sequence = img.BitIciSequence
+                }).ToList()
+            });
+
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
@@ -106,10 +138,7 @@ namespace MarkaziaBITStore.Controllers
             var response = new ItemColorResponseDto
             {
                 Id = added.BitItcId,
-                Status = added.BitItcStatus,
-                Item = new ItemResponseDto { Id = added.BitItcBitItm.BitItmId, NameEn = added.BitItcBitItm.BitItmNameEn },
-                Color = new ColorResponseDto { Id = added.BitItcBitCol.BitColId, NameEn = added.BitItcBitCol.BitColNameEn },
-                Images = new List<ItemColorImageResponseDto>()
+                Status = added.BitItcStatus
             };
 
             return CreatedAtAction(nameof(GetById), new { id = added.BitItcId }, response);

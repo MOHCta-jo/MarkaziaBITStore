@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using MarkaziaBITStore.Application.Configuration;
 using MarkaziaBITStore.Application.Entites;
 using Microsoft.EntityFrameworkCore;
 
@@ -58,6 +59,7 @@ public partial class BitStoreDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+
         modelBuilder.Entity<BitCatCategory>(entity =>
         {
             entity.HasKey(e => e.BitCatId).HasName("PK__BIT_CAT___EE50DDF0F60ADC68");
@@ -629,6 +631,9 @@ public partial class BitStoreDbContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_BIT_UFV_UserFavorites_BIT_UFV__BIT_ITCID_BIT_ITC_ItemsColor_BIT_ITC_ID");
         });
+
+
+        modelBuilder.AddGlobalQueryFilters();
 
         OnModelCreatingPartial(modelBuilder);
     }
