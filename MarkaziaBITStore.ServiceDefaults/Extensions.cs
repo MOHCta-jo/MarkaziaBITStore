@@ -25,6 +25,8 @@ public static class Extensions
         services.TryAddScoped<Iitem, ItemService>();
         services.TryAddScoped<IitemColor, ItemColorService>();
         services.TryAddScoped<IitemsColorImage, ItemColorImageService>();
+        services.TryAddScoped<ISupplierInvoiceHeader, SupplierInvoiceHeaderService>();
+        services.TryAddScoped<ISupplierInvoiceDetails, SupplierInvoiceDetailService>();
 
 
         return services;

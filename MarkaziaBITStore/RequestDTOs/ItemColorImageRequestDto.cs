@@ -2,9 +2,9 @@
 {
     public class ItemColorImageRequestDto
     {
-        public int Sequence { get; set; }
-        public string ImageUrl { get; set; } = null!;
-        public bool IsDefault { get; set; }
-        public int? Status { get; set; }
+        public required int Sequence { get; set; }
+        public required string ImageUrl { get; set; }
+        public required bool IsDefault { get; set; }
+        public required int Status { get; set; }
     }
 }

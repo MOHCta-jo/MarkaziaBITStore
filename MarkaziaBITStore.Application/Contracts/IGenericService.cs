@@ -42,7 +42,7 @@ namespace MarkaziaBITStore.Application.Contracts
 
         (IList<TModel> EntityData, int Count) ListWithPaging<TOrderBy>(OrderByDirection orderByDirection,
             Expression<Func<TModel, bool>> filter = null, Expression<Func<TModel, TOrderBy>> orderBy = null,
-            int? page = null, int? pageSize = null, params Expression<Func<TModel, object>>[] includeProperties);
+            int? page = null, int? pageSize = null, Func<IQueryable<TModel>, IQueryable<TModel>> include = null);
 
         bool Any(Expression<Func<TModel, bool>> predicate);
 

@@ -18,14 +18,14 @@ namespace MarkaziaBITStore.Application.Generic
         where TModel : class
         where TDbContext : DbContext
     {
-        private readonly BitStoreDbContext _bitStoreDbContext;
+        protected readonly TDbContext _genDBContext;
         protected readonly DbSet<TModel> dbSet;
         protected readonly ILogger<GenericService<TModel, TDbContext>> logger;
 
-        public GenericService(BitStoreDbContext bitStoreDbContext, ILogger<GenericService<TModel, TDbContext>> logger)
+        public GenericService(TDbContext bitStoreDbContext, ILogger<GenericService<TModel, TDbContext>> logger)
         {
-            _bitStoreDbContext = bitStoreDbContext;
-            dbSet = _bitStoreDbContext.Set<TModel>();
+            _genDBContext = bitStoreDbContext;
+            dbSet = _genDBContext.Set<TModel>();
             this.logger = logger;
         }
 
@@ -34,7 +34,7 @@ namespace MarkaziaBITStore.Application.Generic
             try
             {
                 dbSet.Add(entity);
-                await _bitStoreDbContext.SaveChangesAsync();
+                await _genDBContext.SaveChangesAsync();
 
                 return entity;
             }
@@ -52,7 +52,7 @@ namespace MarkaziaBITStore.Application.Generic
             {
                 await dbSet.AddRangeAsync(entities);
 
-                await _bitStoreDbContext.SaveChangesAsync();
+                await _genDBContext.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -79,19 +79,19 @@ namespace MarkaziaBITStore.Application.Generic
         {
             try
             {
-                bool isDetached = _bitStoreDbContext.Entry(entity).State == EntityState.Detached;
+                bool isDetached = _genDBContext.Entry(entity).State == EntityState.Detached;
                 if (isDetached)
                 {
-                    _bitStoreDbContext.Entry(entity).State = EntityState.Deleted;
+                    _genDBContext.Entry(entity).State = EntityState.Deleted;
                     dbSet.Attach(entity);
                 }
 
                 dbSet.Remove(entity);
-                _bitStoreDbContext.SaveChanges();
+                _genDBContext.SaveChanges();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                logger.LogError(ex, "Error deleting entity of type {EntityType}", typeof(TModel).Name);
                 throw;
             }
         }
@@ -104,7 +104,7 @@ namespace MarkaziaBITStore.Application.Generic
                     throw new ArgumentNullException(nameof(predicate), "Predicate cannot be null.");
 
                 dbSet.Remove(dbSet.FirstOrDefault(predicate));
-                await _bitStoreDbContext.SaveChangesAsync();
+                await _genDBContext.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -121,7 +121,7 @@ namespace MarkaziaBITStore.Application.Generic
             try
             {
                 dbSet.RemoveRange(entities);
-                await _bitStoreDbContext.SaveChangesAsync();
+                await _genDBContext.SaveChangesAsync();
             }
             catch (DbUpdateException ex)
             {
@@ -141,8 +141,8 @@ namespace MarkaziaBITStore.Application.Generic
         //            throw new InvalidOperationException($"Entity of type {typeof(TModel).Name} not found for the given predicate.");
         //        }
 
-        //        _bitStoreDbContext.Entry(entity).State = EntityState.Modified;
-        //        await _bitStoreDbContext.SaveChangesAsync();
+        //        _genDBContext.Entry(entity).State = EntityState.Modified;
+        //        await _genDBContext.SaveChangesAsync();
         //    }
         //    catch (Exception ex)
         //    {
@@ -156,9 +156,9 @@ namespace MarkaziaBITStore.Application.Generic
         {
             try
             {
-                _bitStoreDbContext.Entry(entity).State = EntityState.Detached;
+                _genDBContext.Entry(entity).State = EntityState.Detached;
                 dbSet.Update(entity);
-                await _bitStoreDbContext.SaveChangesAsync();
+                await _genDBContext.SaveChangesAsync();
 
             }
             catch (Exception ex)
@@ -177,7 +177,7 @@ namespace MarkaziaBITStore.Application.Generic
             {
                 dbSet.UpdateRange(entities);
 
-                await _bitStoreDbContext.SaveChangesAsync();
+                await _genDBContext.SaveChangesAsync();
             }
             catch (DbUpdateException ex)
             {
@@ -319,14 +319,16 @@ namespace MarkaziaBITStore.Application.Generic
 
             return query;
         }
+
+
         public (IList<TModel> EntityData, int Count) ListWithPaging<TOrderBy>(OrderByDirection orderByDirection,
-            Expression<Func<TModel, bool>> filter = null, Expression<Func<TModel, TOrderBy>> orderBy = null, 
-            int? page = null, int? pageSize = null, params Expression<Func<TModel, object>>[] includeProperties)
+       Expression<Func<TModel, bool>> filter = null, Expression<Func<TModel, TOrderBy>> orderBy = null,
+       int? page = null, int? pageSize = null, Func<IQueryable<TModel>, IQueryable<TModel>> include = null)
 
         {
             try
             {
-                return PaginateList(OrderByDirection.ASC, filter, orderBy, page, pageSize, includeProperties);
+                return PaginateList(OrderByDirection.ASC, filter, orderBy, page, pageSize, include);
             }
             catch (Exception ex)
             {
@@ -338,14 +340,12 @@ namespace MarkaziaBITStore.Application.Generic
         private (IList<TModel> EntityData, int Count) PaginateList<TOrderBy>(OrderByDirection orderByDirection,
            Expression<Func<TModel, bool>> filter = null,
            Expression<Func<TModel, TOrderBy>> orderBy = null,
-           int? page = null, int? pageSize = null, params Expression<Func<TModel, object>>[] includeProperties)
+           int? page = null, int? pageSize = null, Func<IQueryable<TModel>, IQueryable<TModel>> include = null)
         {
             IQueryable<TModel> query = dbSet;
 
-            if (includeProperties != null && includeProperties.Count() != 0)
-            {
-                includeProperties.ToList().ForEach(i => { query = query.Include(i); });
-            }
+            if (include != null)
+                query = include(query);
 
             if (filter != null)
             {
@@ -373,6 +373,6 @@ namespace MarkaziaBITStore.Application.Generic
             return (data, count);
         }
 
-    
+
     }
 }

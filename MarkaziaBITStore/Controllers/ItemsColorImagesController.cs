@@ -62,7 +62,7 @@ namespace MarkaziaBITStore.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Create(ItemColorImageRequestDto request, int itemColorId)
+        public async Task<IActionResult> Create([FromBody] ItemColorImageRequestDto request, int itemColorId)
         {
             if (request == null) return BadRequest();
 
@@ -93,7 +93,7 @@ namespace MarkaziaBITStore.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, ItemColorImageRequestDto request)
+        public async Task<IActionResult> Update(int id, [FromBody] ItemColorImageRequestDto request)
         {
             var entity = await _itemColorImageService.GetBy(x => x.BitIciId == id);
             if (entity == null) return NotFound();

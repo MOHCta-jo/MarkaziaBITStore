@@ -4,6 +4,8 @@ using MarkaziaBITStore.Application.Entites;
 using MarkaziaBITStore.Application.Services;
 using MarkaziaBITStore.RequestDTOs;
 using MarkaziaBITStore.ResponseDTOs;
+using MarkaziaWebCommon.Models;
+using MarkaziaWebCommon.Utils.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using static Grpc.Core.Metadata;
@@ -28,22 +30,36 @@ namespace MarkaziaBITStore.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
-            //should using pagination here
+            try
+            {
+                var (items, totalCount) = _itemService.ListWithPaging(
+                    OrderByDirection.ASC,
+                    filter: null,
+                    orderBy: x => x.BitItmId,
+                    page: (page - 1) * pageSize,
+                    pageSize: pageSize,
+                     include: q=>  q.Include(i => i.BitItcItemsColors)
+                        .ThenInclude(ic => ic.BitItcBitCol)
+                    .Include(i => i.BitItcItemsColors)
+                        .ThenInclude(ic => ic.BitIciItemsColorImages)
+                    .Include(i => i.BitItmBitCat)
+                );
 
-            var items =  _itemService.GetAllAsQueryable()
-                   .Include(i => i.BitItcItemsColors)
-                    .ThenInclude(ic => ic.BitItcBitCol)
-                .Include(i => i.BitItcItemsColors)
-                    .ThenInclude(ic => ic.BitIciItemsColorImages)
-                .Include(i => i.BitItmBitCat)
-                .ToList();
+                if (items == null || items.Count == 0)
+                    return Ok(new PagingResultWrapper<ItemResponseDto>
+                    {
+                        Data = new List<ItemResponseDto>(),
+                        Message = "No items found",
+                        Error = null,
+                        PageNo = page,
+                        PageSize = pageSize,
+                        TotalCount = 0,
+                        PageCount = 0
+                    });
 
-            if (items == null) return NotFound();
-
-            var result = items
-                .Select(i => new ItemResponseDto
+                var resultDtos = items.Select(i => new ItemResponseDto
                 {
                     Id = i.BitItmId,
                     NameEn = i.BitItmNameEn,
@@ -67,10 +83,30 @@ namespace MarkaziaBITStore.Controllers
                             IsDefault = img.BitIciIsDefault
                         }).ToList()
                     }).ToList()
-                });
+                }).ToList();
 
-            return Ok(result);
+                var pagingResult = new PagingResult<ItemResponseDto>
+                {
+                    Data = resultDtos,
+                    PageNo = page,
+                    PageSize = pageSize,
+                    PageCount = (int)Math.Ceiling((double)totalCount / pageSize),
+                    TotalCount = totalCount
+                };
+
+                return Ok((PagingResultWrapper<ItemResponseDto>)pagingResult);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ResultWrapper<string>
+                {
+                    Data = null!,
+                    Message = "Error retrieving items",
+                    Error = ex
+                });
+            }
         }
+
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
@@ -129,7 +165,7 @@ namespace MarkaziaBITStore.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Create(ItemRequestDto request)
+        public async Task<IActionResult> Create([FromBody] ItemRequestDto request)
         {
             if (request == null) return BadRequest();
 
@@ -165,7 +201,7 @@ namespace MarkaziaBITStore.Controllers
 
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, ItemRequestDto request)
+        public async Task<IActionResult> Update(int id, [FromBody] ItemRequestDto request)
         {
             var entity = await _itemService.GetBy(x => x.BitItmId == id);
             if (entity == null) return NotFound();

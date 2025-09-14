@@ -87,7 +87,7 @@ namespace MarkaziaBITStore.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(CategoryRequestDto request)
+        public async Task<IActionResult> Create([FromBody]  CategoryRequestDto request)
         {
             var entity = new BitCatCategory
             {
@@ -118,7 +118,7 @@ namespace MarkaziaBITStore.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, CategoryRequestDto request)
+        public async Task<IActionResult> Update(int id, [FromBody] CategoryRequestDto request)
         {
             if (request is null || id <= 0) return BadRequest();
 

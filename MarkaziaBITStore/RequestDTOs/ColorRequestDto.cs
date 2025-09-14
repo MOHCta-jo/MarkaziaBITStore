@@ -2,9 +2,9 @@
 {
     public class ColorRequestDto
     {
-        public string? NameEn { get; set; }
-        public string? NameAr { get; set; }
-        public string HexCode { get; set; } = null!;
+        public required string NameEn { get; set; }
+        public  required string NameAr { get; set; }
+        public required string HexCode { get; set; }
     }
 
 }

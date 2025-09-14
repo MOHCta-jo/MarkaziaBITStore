@@ -2,9 +2,9 @@
 {
     public class CategoryRequestDto
     {
-        public string NameEn { get; set; } = null!;
-        public string? NameAr { get; set; }
-        public string? IconUrl { get; set; }
+        public required string NameEn { get; set; }
+        public required string NameAr { get; set; }
+        public required string IconUrl { get; set; }
         public bool IsActive { get; set; }
     }
 }

@@ -4,12 +4,14 @@
 using MarkaziaBITStore.Application.ApplicationDBContext;
 using MarkaziaBITStore.Settings;
 using MarkaziaWebCommon.Utils.Swagger;
+using MarkaziaWebCommon.Utils.VLog;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using Serilog.Events;
 using System.Text;
 
 namespace MarkaziaBITStore;
@@ -23,6 +25,29 @@ public class Program
 
         builder.Services.AddDbContext<BitStoreDbContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+        builder.AddVLog(new CreateLoggerParam
+        {
+            LogFilePath = "logs/log-.txt",
+            LogEventLevel = LogEventLevel.Debug,
+        });
+        //builder.VWebLogger(
+        //loggerConfiguration: new LoggerConfiguration()
+        //    .MinimumLevel.Debug()
+        //    .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+        //    .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
+        //    .MinimumLevel.Override("System", LogEventLevel.Warning)
+        //    .Enrich.FromLogContext()
+        //    .Enrich.WithProperty("Application", "BITStoreAPI")
+        //    .Enrich.WithProperty("Environment", builder.Environment.EnvironmentName)
+        //    .WriteTo.Console(
+        //        outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj} {Properties:j}{NewLine}{Exception}")
+        //    .WriteTo.File(
+        //        path: "logs/log-.txt",
+        //        rollingInterval: RollingInterval.Day,
+        //        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
+        //    .WriteTo.Debug()
+        //    );
 
 
         builder.Services.AddControllers();
@@ -95,11 +120,21 @@ public class Program
         //    c.AddSecurityRequirement(requirement);
         //});
 
-        builder.Host.UseSerilog((ctx, lc) =>
-        lc.ReadFrom.Configuration(ctx.Configuration));
 
-        //VSwaggerConfiguration.AddVSwaggerWebBuilder(builder);//TODO : Question
-        builder.Services.AddHttpContextAccessor();
+        //builder.Host.UseSerilog((ctx, lc) =>
+        //lc.ReadFrom.Configuration(ctx.Configuration));
+
+        builder.AddVSwaggerWebBuilder(new VSwaggerParam
+        {
+
+            EnableJWT = true,
+            EnableApiKey = false,
+            ProjectAssembly = typeof(Program).Assembly,
+            SwaggerSetupAction = c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "MarkaziaBITStore API", Version = "v1" });
+            }
+        });
 
         builder.Services.AddMemoryCache();
 

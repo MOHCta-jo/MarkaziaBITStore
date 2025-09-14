@@ -9,5 +9,10 @@
   <ItemGroup>
     <ProjectReference Include="..\MarkaziaBITStore.ServiceDefaults\MarkaziaBITStore.ServiceDefaults.csproj" />
   </ItemGroup>
-
+	
+	<PropertyGroup>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>$(NoWarn);1591</NoWarn>
+		<!-- Optional: suppress missing XML comments warnings -->
+	</PropertyGroup>
 </Project>

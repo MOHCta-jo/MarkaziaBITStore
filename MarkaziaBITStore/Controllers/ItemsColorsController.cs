@@ -119,7 +119,7 @@ namespace MarkaziaBITStore.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Create(ItemColorRequestDto request)
+        public async Task<IActionResult> Create([FromBody] ItemColorRequestDto request)
         {
             if (request == null) return BadRequest();
 
@@ -145,7 +145,7 @@ namespace MarkaziaBITStore.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, ItemColorRequestDto request)
+        public async Task<IActionResult> Update(int id, [FromBody] ItemColorRequestDto request)
         {
             var entity = await _itemColorService.GetBy(x => x.BitItcId == id);
             if (entity == null) return NotFound();
