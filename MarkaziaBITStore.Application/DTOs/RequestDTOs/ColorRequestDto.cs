@@ -1,4 +1,4 @@
-﻿namespace MarkaziaBITStore.RequestDTOs
+﻿namespace MarkaziaBITStore.Application.DTOs.RequestDTOs
 {
     public class ColorRequestDto
     {

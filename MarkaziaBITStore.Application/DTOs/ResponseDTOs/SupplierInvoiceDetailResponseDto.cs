@@ -1,4 +1,4 @@
-﻿namespace MarkaziaBITStore.ResponseDTOs
+﻿namespace MarkaziaBITStore.Application.DTOs.ResponseDTOs
 {
     public class SupplierInvoiceDetailResponseDto
     {

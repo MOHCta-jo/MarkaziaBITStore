@@ -1,8 +1,11 @@
 ﻿using MarkaziaBITStore.Application.Contracts;
 using MarkaziaBITStore.Application.Contracts.User;
+using MarkaziaBITStore.Application.DTOs.PagingParamDTOs;
+using MarkaziaBITStore.Application.DTOs.RequestDTOs;
+using MarkaziaBITStore.Application.DTOs.ResultDTOs;
 using MarkaziaBITStore.Application.Entites;
-using MarkaziaBITStore.RequestDTOs;
-using MarkaziaBITStore.ResponseDTOs;
+using MarkaziaBITStore.Application.DTOs.ResponseDTOs;
+using MarkaziaWebCommon.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -28,24 +31,38 @@ namespace MarkaziaBITStore.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] GetSupplierInvoiceDetailsListParam param)
         {
-            var list = await _supplierInvoiceDetailsService.GetAllAsQueryable()
-                .ToListAsync();
-
-            var response = list.Select(d => new SupplierInvoiceDetailResponseDto
+            try
             {
-                Id = d.BitSidId,
-                HeaderId = d.BitSidBitSihid,
-                ItemColorId = d.BitSidBitItcid,
-                Quantity = d.BitSidQuantity,
-                UnitPrice = d.BitSidUnitPrice,
-                Cancelled = d.BitSidCancelled
-            });
+                var pagingResult = await _supplierInvoiceDetailsService.GetSupplierInvoiceDetailsList(param);
 
-            return Ok(response);
+                if (pagingResult.Data == null || pagingResult.Data.Count == 0)
+                {
+                    return Ok(new PagingResultWrapper<GetSupplierInvoiceDetailsListResult>
+                    {
+                        Data = new List<GetSupplierInvoiceDetailsListResult>(),
+                        Message = "No supplier invoice details found",
+                        Error = null,
+                        PageNo = param.PageNo,
+                        PageSize = param.PageSize,
+                        TotalCount = 0,
+                        PageCount = 0
+                    });
+                }
+
+                return Ok((PagingResultWrapper<GetSupplierInvoiceDetailsListResult>)pagingResult);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ResultWrapper<string>
+                {
+                    Data = null!,
+                    Message = "Error retrieving supplier invoice details",
+                    Error = ex
+                });
+            }
         }
-
         // GET by Id
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)

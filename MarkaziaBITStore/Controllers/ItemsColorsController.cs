@@ -1,9 +1,11 @@
 ﻿using MarkaziaBITStore.Application.Contracts;
 using MarkaziaBITStore.Application.Contracts.User;
+using MarkaziaBITStore.Application.DTOs.PagingParamDTOs;
+using MarkaziaBITStore.Application.DTOs.RequestDTOs;
+using MarkaziaBITStore.Application.DTOs.ResultDTOs;
 using MarkaziaBITStore.Application.Entites;
-using MarkaziaBITStore.Application.Services;
-using MarkaziaBITStore.RequestDTOs;
-using MarkaziaBITStore.ResponseDTOs;
+using MarkaziaBITStore.Application.DTOs.ResponseDTOs;
+using MarkaziaWebCommon.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -29,47 +31,37 @@ namespace MarkaziaBITStore.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] GetItemColorsListParam param)
         {
-
-            // should use paggination here
-            var list = await _itemColorService.GetAllAsQueryable()
-                .Include(ic => ic.BitItcBitItm)
-                .Include(ic => ic.BitItcBitCol)
-                .Include(ic => ic.BitIciItemsColorImages)
-                .ToListAsync();
-
-            var result =  list.Select(ic => new ItemColorResponseDto
+            try
             {
-                Id = ic.BitItcId,
-                Status = ic.BitItcStatus,
-                Item = new ItemResponseDto
-                {
-                    Id = ic.BitItcBitItm.BitItmId,
-                    NameEn = ic.BitItcBitItm.BitItmNameEn,
-                    NameAr = ic.BitItcBitItm.BitItmNameAr,
-                    DescriptionEn = ic.BitItcBitItm.BitItmDescriptionEn,
-                    DescriptionAr = ic.BitItcBitItm.BitItmDescriptionAr,
-                    Points = ic.BitItcBitItm.BitItmPoints,
-                    Status = ic.BitItcBitItm.BitItmStatus
-                },
-                Color = new ColorResponseDto
-                {
-                    Id = ic.BitItcBitCol.BitColId,
-                    NameEn = ic.BitItcBitCol.BitColNameEn,
-                    NameAr = ic.BitItcBitCol.BitColNameAr,
-                    HexCode = ic.BitItcBitCol.BitColHexCode
-                },
-                Images = ic.BitIciItemsColorImages.Select(img => new ItemColorImageResponseDto
-                {
-                    Id = img.BitIciId,
-                    ImageUrl = img.BitIciImageUrl,
-                    IsDefault = img.BitIciIsDefault,
-                    Sequence = img.BitIciSequence
-                }).ToList()
-            });
+                var pagingResult = await _itemColorService.GetItemColorsList(param);
 
-            return Ok(result);
+                if (pagingResult.Data == null || pagingResult.Data.Count == 0)
+                {
+                    return Ok(new PagingResultWrapper<GetItemColorsListResult>
+                    {
+                        Data = new List<GetItemColorsListResult>(),
+                        Message = "No item colors found",
+                        Error = null,
+                        PageNo = param.PageNo,
+                        PageSize = param.PageSize,
+                        TotalCount = 0,
+                        PageCount = 0
+                    });
+                }
+
+                return Ok((PagingResultWrapper<GetItemColorsListResult>)pagingResult);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ResultWrapper<string>
+                {
+                    Data = null!,
+                    Message = "Error retrieving item colors",
+                    Error = ex
+                });
+            }
         }
 
         [HttpGet("{id}")]

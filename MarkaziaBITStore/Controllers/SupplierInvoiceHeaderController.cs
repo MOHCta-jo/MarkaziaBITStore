@@ -1,8 +1,12 @@
 ﻿using MarkaziaBITStore.Application.Contracts;
 using MarkaziaBITStore.Application.Contracts.User;
+using MarkaziaBITStore.Application.DTOs.PagingParamDTOs;
+using MarkaziaBITStore.Application.DTOs.RequestDTOs;
+using MarkaziaBITStore.Application.DTOs.ResultDTOs;
 using MarkaziaBITStore.Application.Entites;
-using MarkaziaBITStore.RequestDTOs;
-using MarkaziaBITStore.ResponseDTOs;
+using MarkaziaBITStore.Application.Services;
+using MarkaziaBITStore.Application.DTOs.ResponseDTOs;
+using MarkaziaWebCommon.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -32,32 +36,37 @@ namespace MarkaziaBITStore.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] GetSupplierInvoiceHeadersListParam param)
         {
-            var list = await _supplierInvoiceHeader.GetAllAsQueryable()
-                .Include(h => h.BitSidSupplierInvoiceDetails)
-                .ToListAsync();
-
-            var response = list.Select(h => new SupplierInvoiceHeaderResponseDto
+            try
             {
-                Id = h.BitSihId,
-                SupplierId = h.BitSihSupplierId,
-                SupplierInvNo = h.BitSihSupplierInvNo,
-                SupplierInvDate = h.BitSihSupplierInvDate,
-                SupplierInvoiceAmountNet = h.BitSihSupplierInvoiceAmountNet,
-                Cancelled = h.BitSihCancelled,
-                Details = h.BitSidSupplierInvoiceDetails.Select(d => new SupplierInvoiceDetailResponseDto
-                {
-                    Id = d.BitSidId,
-                    HeaderId = d.BitSidBitSihid,
-                    ItemColorId = d.BitSidBitItcid,
-                    Quantity = d.BitSidQuantity,
-                    UnitPrice = d.BitSidUnitPrice,
-                    Cancelled = d.BitSidCancelled
-                }).ToList()
-            });
+                var pagingResult = await _supplierInvoiceHeader.GetSupplierInvoiceHeadersList(param);
 
-            return Ok(response);
+                if (pagingResult.Data == null || pagingResult.Data.Count == 0)
+                {
+                    return Ok(new PagingResultWrapper<GetSupplierInvoiceHeadersListResult>
+                    {
+                        Data = new List<GetSupplierInvoiceHeadersListResult>(),
+                        Message = "No supplier invoice headers found",
+                        Error = null,
+                        PageNo = param.PageNo,
+                        PageSize = param.PageSize,
+                        TotalCount = 0,
+                        PageCount = 0
+                    });
+                }
+
+                return Ok((PagingResultWrapper<GetSupplierInvoiceHeadersListResult>)pagingResult);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ResultWrapper<string>
+                {
+                    Data = null!,
+                    Message = "Error retrieving supplier invoice headers",
+                    Error = ex
+                });
+            }
         }
 
         [HttpGet("{id}")]

@@ -1,13 +1,17 @@
 ﻿using MarkaziaBITStore.Application.Contracts;
 using MarkaziaBITStore.Application.Contracts.User;
+using MarkaziaBITStore.Application.DTOs;
+using MarkaziaBITStore.Application.DTOs.PagingParamDTOs;
+using MarkaziaBITStore.Application.DTOs.RequestDTOs;
+using MarkaziaBITStore.Application.DTOs.ResultDTOs;
 using MarkaziaBITStore.Application.Entites;
 using MarkaziaBITStore.Application.Services;
-using MarkaziaBITStore.RequestDTOs;
-using MarkaziaBITStore.ResponseDTOs;
+using MarkaziaBITStore.Application.DTOs.ResponseDTOs;
 using MarkaziaWebCommon.Models;
 using MarkaziaWebCommon.Utils.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using static Grpc.Core.Metadata;
 
 namespace MarkaziaBITStore.Controllers
@@ -28,73 +32,29 @@ namespace MarkaziaBITStore.Controllers
             currentUserID = _currentUser.GetUserId();
         }
 
-
+        
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+        public async Task<IActionResult> GetAll([FromQuery] GetItemsListParam param)
         {
             try
             {
-                var (items, totalCount) = _itemService.ListWithPaging(
-                    OrderByDirection.ASC,
-                    filter: null,
-                    orderBy: x => x.BitItmId,
-                    page: (page - 1) * pageSize,
-                    pageSize: pageSize,
-                     include: q=>  q.Include(i => i.BitItcItemsColors)
-                        .ThenInclude(ic => ic.BitItcBitCol)
-                    .Include(i => i.BitItcItemsColors)
-                        .ThenInclude(ic => ic.BitIciItemsColorImages)
-                    .Include(i => i.BitItmBitCat)
-                );
+                var pagingResult = await _itemService.GetItemsList(param);
 
-                if (items == null || items.Count == 0)
-                    return Ok(new PagingResultWrapper<ItemResponseDto>
+                if (pagingResult.Data == null || pagingResult.Data.Count == 0)
+                {
+                    return Ok(new PagingResultWrapper<GetItemsListResult>
                     {
-                        Data = new List<ItemResponseDto>(),
+                        Data = new List<GetItemsListResult>(),
                         Message = "No items found",
                         Error = null,
-                        PageNo = page,
-                        PageSize = pageSize,
+                        PageNo = param.PageNo,
+                        PageSize = param.PageSize,
                         TotalCount = 0,
                         PageCount = 0
                     });
+                }
 
-                var resultDtos = items.Select(i => new ItemResponseDto
-                {
-                    Id = i.BitItmId,
-                    NameEn = i.BitItmNameEn,
-                    NameAr = i.BitItmNameAr,
-                    Points = i.BitItmPoints,
-                    Colors = i.BitItcItemsColors.Select(c => new ItemColorResponseDto
-                    {
-                        Id = c.BitItcId,
-                        Status = c.BitItcStatus,
-                        Color = new ColorResponseDto
-                        {
-                            Id = c.BitItcBitCol.BitColId,
-                            NameEn = c.BitItcBitCol.BitColNameEn,
-                            NameAr = c.BitItcBitCol.BitColNameAr,
-                            HexCode = c.BitItcBitCol.BitColHexCode
-                        },
-                        Images = c.BitIciItemsColorImages.Select(img => new ItemColorImageResponseDto
-                        {
-                            Id = img.BitIciId,
-                            ImageUrl = img.BitIciImageUrl,
-                            IsDefault = img.BitIciIsDefault
-                        }).ToList()
-                    }).ToList()
-                }).ToList();
-
-                var pagingResult = new PagingResult<ItemResponseDto>
-                {
-                    Data = resultDtos,
-                    PageNo = page,
-                    PageSize = pageSize,
-                    PageCount = (int)Math.Ceiling((double)totalCount / pageSize),
-                    TotalCount = totalCount
-                };
-
-                return Ok((PagingResultWrapper<ItemResponseDto>)pagingResult);
+                return Ok((PagingResultWrapper<GetItemsListResult>)pagingResult);
             }
             catch (Exception ex)
             {
@@ -219,6 +179,39 @@ namespace MarkaziaBITStore.Controllers
 
             await _itemService.EditAsync(entity);
             return NoContent();
+        }
+
+
+        [HttpPost("bulk")]
+        public async Task<IActionResult> CreateRange([FromBody] List<ItemRequestDto> requests)
+        {
+            if (requests == null || !requests.Any())
+                return BadRequest("No items provided");
+
+            var addedItems = await _itemService.AddRangeAsync(requests, currentUserID);
+
+            
+            return CreatedAtAction(nameof(GetAll), addedItems);
+        }
+
+        [HttpPut("bulk")]
+        public async Task<IActionResult> UpdateRange([FromBody] List<ItemUpdateRequestDto> requests)
+        {
+            try
+            {
+                if (requests == null || !requests.Any())
+                    return BadRequest("No items provided");
+
+
+                await _itemService.EditRangeAsync(requests,currentUserID);
+
+
+                return Ok("Successfully Updated!");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Something went wrong while updating!");
+            }
         }
 
 

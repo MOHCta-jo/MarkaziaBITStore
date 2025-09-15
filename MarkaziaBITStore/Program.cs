@@ -31,23 +31,6 @@ public class Program
             LogFilePath = "logs/log-.txt",
             LogEventLevel = LogEventLevel.Debug,
         });
-        //builder.VWebLogger(
-        //loggerConfiguration: new LoggerConfiguration()
-        //    .MinimumLevel.Debug()
-        //    .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-        //    .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
-        //    .MinimumLevel.Override("System", LogEventLevel.Warning)
-        //    .Enrich.FromLogContext()
-        //    .Enrich.WithProperty("Application", "BITStoreAPI")
-        //    .Enrich.WithProperty("Environment", builder.Environment.EnvironmentName)
-        //    .WriteTo.Console(
-        //        outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj} {Properties:j}{NewLine}{Exception}")
-        //    .WriteTo.File(
-        //        path: "logs/log-.txt",
-        //        rollingInterval: RollingInterval.Day,
-        //        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
-        //    .WriteTo.Debug()
-        //    );
 
 
         builder.Services.AddControllers();

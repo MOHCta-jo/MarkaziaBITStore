@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace MarkaziaBITStore.ResponseDTOs
+namespace MarkaziaBITStore.Application.DTOs.ResponseDTOs
 {
     public class CategoryResponseDto
     {

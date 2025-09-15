@@ -1,9 +1,12 @@
 ﻿using Azure.Core;
 using MarkaziaBITStore.Application.Contracts;
 using MarkaziaBITStore.Application.Contracts.User;
+using MarkaziaBITStore.Application.DTOs.PagingParamDTOs;
+using MarkaziaBITStore.Application.DTOs.RequestDTOs;
+using MarkaziaBITStore.Application.DTOs.ResultDTOs;
 using MarkaziaBITStore.Application.Entites;
-using MarkaziaBITStore.RequestDTOs;
-using MarkaziaBITStore.ResponseDTOs;
+using MarkaziaBITStore.Application.DTOs.ResponseDTOs;
+using MarkaziaWebCommon.Models;
 using MarkaziaWebCommon.Utils.CustomAttribute;
 using MarkaziaWebCommon.Utils.Enums.AppRoles;
 using Microsoft.AspNetCore.Authorization;
@@ -33,28 +36,37 @@ namespace MarkaziaBITStore.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] GetCategoriesListParam param)
         {
-            //Should use pagination for large data sets here 
-            var categories = await _categoryService
-                .GetByListAsync(c => c.BitCatIsActive, true, false, c => c.BitItmItems);
-
-            var result = categories.Select(c => new
+            try
             {
-                c.BitCatId,
-                c.BitCatNameEn,
-                c.BitCatNameAr,
-                c.BitCatIconUrl,
-                c.BitCatIsActive,
-                Items = c.BitItmItems.Select(i => new {
-                    i.BitItmId,
-                    i.BitItmNameEn,
-                    i.BitItmNameAr,
-                    i.BitItmPoints
-                })
-            });
+                var pagingResult = await _categoryService.GetCategoriesList(param);
 
-            return Ok(result);
+                if (pagingResult.Data == null || pagingResult.Data.Count == 0)
+                {
+                    return Ok(new PagingResultWrapper<GetCategoriesListResult>
+                    {
+                        Data = new List<GetCategoriesListResult>(),
+                        Message = "No categories found",
+                        Error = null,
+                        PageNo = param.PageNo,
+                        PageSize = param.PageSize,
+                        TotalCount = 0,
+                        PageCount = 0
+                    });
+                }
+
+                return Ok((PagingResultWrapper<GetCategoriesListResult>)pagingResult);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ResultWrapper<string>
+                {
+                    Data = null!,
+                    Message = "Error retrieving categories",
+                    Error = ex
+                });
+            }
         }
 
 

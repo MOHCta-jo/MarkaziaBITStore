@@ -1,9 +1,9 @@
 ﻿using MarkaziaBITStore.Application.Contracts;
 using MarkaziaBITStore.Application.Contracts.User;
+using MarkaziaBITStore.Application.DTOs.RequestDTOs;
 using MarkaziaBITStore.Application.Entites;
 using MarkaziaBITStore.Application.Services;
-using MarkaziaBITStore.RequestDTOs;
-using MarkaziaBITStore.ResponseDTOs;
+using MarkaziaBITStore.Application.DTOs.ResponseDTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Drawing;

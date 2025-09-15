@@ -1,9 +1,12 @@
 ﻿using MarkaziaBITStore.Application.Contracts;
 using MarkaziaBITStore.Application.Contracts.User;
+using MarkaziaBITStore.Application.DTOs.PagingParamDTOs;
+using MarkaziaBITStore.Application.DTOs.RequestDTOs;
+using MarkaziaBITStore.Application.DTOs.ResultDTOs;
 using MarkaziaBITStore.Application.Entites;
 using MarkaziaBITStore.Application.Services;
-using MarkaziaBITStore.RequestDTOs;
-using MarkaziaBITStore.ResponseDTOs;
+using MarkaziaBITStore.Application.DTOs.ResponseDTOs;
+using MarkaziaWebCommon.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,14 +30,40 @@ namespace MarkaziaBITStore.Controllers
             currentUserID = _currentUser.GetUserId();
         }
 
-
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] GetColorsListParam param)
         {
-            var colors = await _colorService.GetByListAsync(x=> true);
+            try
+            {
+                var pagingResult = await _colorService.GetColorsList(param);
 
-            return Ok(colors);
+                if (pagingResult.Data == null || pagingResult.Data.Count == 0)
+                {
+                    return Ok(new PagingResultWrapper<GetColorsListResult>
+                    {
+                        Data = new List<GetColorsListResult>(),
+                        Message = "No colors found",
+                        Error = null,
+                        PageNo = param.PageNo,
+                        PageSize = param.PageSize,
+                        TotalCount = 0,
+                        PageCount = 0
+                    });
+                }
+
+                return Ok((PagingResultWrapper<GetColorsListResult>)pagingResult);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ResultWrapper<string>
+                {
+                    Data = null!,
+                    Message = "Error retrieving colors",
+                    Error = ex
+                });
+            }
         }
+
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
