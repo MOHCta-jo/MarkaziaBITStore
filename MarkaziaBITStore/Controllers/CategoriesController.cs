@@ -4,7 +4,7 @@ using MarkaziaBITStore.Application.Contracts.User;
 using MarkaziaBITStore.Application.DTOs.PagingParamDTOs;
 using MarkaziaBITStore.Application.DTOs.RequestDTOs;
 using MarkaziaBITStore.Application.DTOs.ResultDTOs;
-using MarkaziaBITStore.Application.Entites;
+using MarkaziaBITStore.Application.Entities;
 using MarkaziaBITStore.Application.DTOs.ResponseDTOs;
 using MarkaziaWebCommon.Models;
 using MarkaziaWebCommon.Utils.CustomAttribute;
@@ -60,11 +60,17 @@ namespace MarkaziaBITStore.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new ResultWrapper<string>
+                // Return only serializable error information
+                return StatusCode(500, new
                 {
-                    Data = null!,
+                    Data = (string)null,
                     Message = "Error retrieving categories",
-                    Error = ex
+                    Error = new
+                    {
+                        Message = ex.Message,
+                        ExceptionType = ex.GetType().Name,
+                        StackTrace = ex.StackTrace
+                    }
                 });
             }
         }
@@ -74,23 +80,23 @@ namespace MarkaziaBITStore.Controllers
         public async Task<IActionResult> GetById(int id)
         {
             var category = await _categoryService
-                .GetBy(c => c.BitCatId == id, true, false, c => c.Include(x=> x.BitItmItems));
+                .GetBy(c => c.BIT_CAT_ID == id, true, false, c => c.Include(x=> x.BIT_ITM_Items));
 
             if (category == null) return NotFound();
 
 
             var dto = new CategoryResponseDto
             {
-                Id = category.BitCatId,
-                NameEn = category.BitCatNameEn,
-                NameAr = category.BitCatNameAr,
-                IconUrl = category.BitCatIconUrl,
-                IsActive = category.BitCatIsActive,
-                Items = category.BitItmItems.Select(i => new ItemResponseDto
+                Id = category.BIT_CAT_ID,
+                NameEn = category.BIT_CAT_NameEN,
+                NameAr = category.BIT_CAT_NameAR,
+                IconUrl = category.BIT_CAT_IconURL,
+                IsActive = category.BIT_CAT_IsActive,
+                Items = category.BIT_ITM_Items.Select(i => new ItemResponseDto
                 {
-                    Id = i.BitItmId,
-                    NameEn = i.BitItmNameEn,
-                    NameAr = i.BitItmNameAr
+                    Id = i.BIT_ITM_ID,
+                    NameEn = i.BIT_ITM_NameEN,
+                    NameAr = i.BIT_ITM_NameAR
                 }).ToList()
             };
 
@@ -101,16 +107,16 @@ namespace MarkaziaBITStore.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody]  CategoryRequestDto request)
         {
-            var entity = new BitCatCategory
+            var entity = new BIT_CAT_Category
             {
-                BitCatNameEn = request.NameEn,
-                BitCatNameAr = request.NameAr,
-                BitCatIconUrl = request.IconUrl,
-                BitCatIsActive = request.IsActive,
+                BIT_CAT_NameEN = request.NameEn,
+                BIT_CAT_NameAR = request.NameAr,
+                BIT_CAT_IconURL = request.IconUrl,
+                BIT_CAT_IsActive = request.IsActive,
 
-                BitCatBitUsridEnterUser = currentUserID,
-                BitCatEnterDate = DateOnly.FromDateTime(DateTime.UtcNow),
-                BitCatEnterTime = TimeOnly.FromDateTime(DateTime.UtcNow)
+                BIT_CAT__MAS_USRID_EnterUser = currentUserID,
+                BIT_CAT_EnterDate = DateOnly.FromDateTime(DateTime.UtcNow),
+                BIT_CAT_EnterTime = TimeOnly.FromDateTime(DateTime.UtcNow)
             };
 
             var categoryResult =  await _categoryService.AddAsync(entity);
@@ -119,14 +125,14 @@ namespace MarkaziaBITStore.Controllers
 
             var response = new CategoryResponseDto
             {
-                Id = entity.BitCatId,
-                NameEn = entity.BitCatNameEn,
-                NameAr = entity.BitCatNameAr,
-                IconUrl = entity.BitCatIconUrl,
-                IsActive = entity.BitCatIsActive
+                Id = entity.BIT_CAT_ID,
+                NameEn = entity.BIT_CAT_NameEN,
+                NameAr = entity.BIT_CAT_NameAR,
+                IconUrl = entity.BIT_CAT_IconURL,
+                IsActive = entity.BIT_CAT_IsActive
             };
 
-            return CreatedAtAction(nameof(GetById), new { id = entity.BitCatId }, response);
+            return CreatedAtAction(nameof(GetById), new { id = entity.BIT_CAT_ID }, response);
         }
 
         [HttpPut("{id}")]
@@ -134,27 +140,27 @@ namespace MarkaziaBITStore.Controllers
         {
             if (request is null || id <= 0) return BadRequest();
 
-            var entity = await _categoryService.GetBy(x => x.BitCatId == id);
+            var entity = await _categoryService.GetBy(x => x.BIT_CAT_ID == id);
 
-            entity.BitCatNameEn = request.NameEn;
-            entity.BitCatNameAr = request.NameAr;
-            entity.BitCatIconUrl = request.IconUrl;
-            entity.BitCatIsActive = request.IsActive;
+            entity.BIT_CAT_NameEN = request.NameEn;
+            entity.BIT_CAT_NameAR = request.NameAr;
+            entity.BIT_CAT_IconURL = request.IconUrl;
+            entity.BIT_CAT_IsActive = request.IsActive;
 
             // Update audit fields
-            entity.BitCatBitUsridModUser = currentUserID;
-            entity.BitCatModDate = DateOnly.FromDateTime(DateTime.Now);
-            entity.BitCatModTime = TimeOnly.FromDateTime(DateTime.Now);
+            entity.BIT_CAT__MAS_USRID_ModUser = currentUserID;
+            entity.BIT_CAT_ModDate = DateOnly.FromDateTime(DateTime.Now);
+            entity.BIT_CAT_ModTime = TimeOnly.FromDateTime(DateTime.Now);
 
             await _categoryService.EditAsync(entity);
 
 
             return Ok(new CategoryResponseDto
             {
-                NameEn = entity.BitCatNameEn,
-                NameAr = entity.BitCatNameAr,
-                IconUrl = entity.BitCatIconUrl,
-                IsActive = entity.BitCatIsActive
+                NameEn = entity.BIT_CAT_NameEN,
+                NameAr = entity.BIT_CAT_NameAR,
+                IconUrl = entity.BIT_CAT_IconURL,
+                IsActive = entity.BIT_CAT_IsActive
             });
         }
 
@@ -165,16 +171,16 @@ namespace MarkaziaBITStore.Controllers
             {
                 if (id <= 0 || id == null) return BadRequest();
 
-                var entity = await _categoryService.GetBy(x => x.BitCatId == id);
+                var entity = await _categoryService.GetBy(x => x.BIT_CAT_ID == id);
 
                 if (entity == null)
                     return NotFound();
 
                 // Soft delete (Cancel)
-                entity.BitCatCancelled = true;
-                entity.BitCatBitUsridCancelledUser = currentUserID;
-                entity.BitCatCancelledDate = DateOnly.FromDateTime(DateTime.Now);
-                entity.BitCatCancelledTime = TimeOnly.FromDateTime(DateTime.Now);
+                entity.BIT_CAT_Cancelled = true;
+                entity.BIT_CAT__MAS_USRID_CancelledUser = currentUserID;
+                entity.BIT_CAT_CancelledDate = DateOnly.FromDateTime(DateTime.Now);
+                entity.BIT_CAT_CancelledTime = TimeOnly.FromDateTime(DateTime.Now);
 
 
                 await _categoryService.EditAsync(entity);
@@ -193,7 +199,7 @@ namespace MarkaziaBITStore.Controllers
         public async Task<IActionResult> GetItemsByCategory(int id)
         {
             var items = await _categoryService.
-                GetByListAsync(c => c.BitCatId == id, true, false, c => c.BitItmItems);
+                GetByListAsync(c => c.BIT_CAT_ID == id, true, false, c => c.BIT_ITM_Items);
 
             if (items == null || !items.Any()) return NotFound();
 

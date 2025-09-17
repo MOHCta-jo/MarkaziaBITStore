@@ -1,6 +1,6 @@
 ﻿using MarkaziaBITStore.Application.DTOs.PagingParamDTOs;
 using MarkaziaBITStore.Application.DTOs.ResultDTOs;
-using MarkaziaBITStore.Application.Entites;
+using MarkaziaBITStore.Application.Entities;
 using MarkaziaWebCommon.Models;
 using System;
 using System.Collections.Generic;
@@ -13,42 +13,42 @@ namespace MarkaziaBITStore.Application.Contracts
 {
     public interface IitemsColorImage 
     {
-        BitIciItemsColorImage GetById(object id);
+        BIT_ICI_ItemsColorImages GetById(object id);
 
-        Task<BitIciItemsColorImage> GetBy(
-            Expression<Func<BitIciItemsColorImage, bool>> predicate,
+        Task<BIT_ICI_ItemsColorImages> GetBy(
+            Expression<Func<BIT_ICI_ItemsColorImages, bool>> predicate,
             bool asNoTracking = true,
             bool IgnoreQueryFilters = false,
-            Func<IQueryable<BitIciItemsColorImage>, IQueryable<BitIciItemsColorImage>> include = null);
+            Func<IQueryable<BIT_ICI_ItemsColorImages>, IQueryable<BIT_ICI_ItemsColorImages>> include = null);
 
 
-        Task<List<BitIciItemsColorImage>> GetByListAsync(
-        Expression<Func<BitIciItemsColorImage, bool>> predicate,
+        Task<List<BIT_ICI_ItemsColorImages>> GetByListAsync(
+        Expression<Func<BIT_ICI_ItemsColorImages, bool>> predicate,
         bool asNoTracking = true,
         bool ignoreQueryFilters = false,
-        params Expression<Func<BitIciItemsColorImage, object>>[] includeProperties);
+        params Expression<Func<BIT_ICI_ItemsColorImages, object>>[] includeProperties);
 
 
-        List<BitIciItemsColorImage> GetAll(bool asNoTracking = true);
+        List<BIT_ICI_ItemsColorImages> GetAll(bool asNoTracking = true);
 
-        IQueryable<BitIciItemsColorImage> GetAllAsQueryable(bool asNoTracking = true);
+        IQueryable<BIT_ICI_ItemsColorImages> GetAllAsQueryable(bool asNoTracking = true);
 
         Task<List<TResult>> GetByListWithSelector<TResult>(
-        Expression<Func<BitIciItemsColorImage, TResult>> selector,
-        Expression<Func<BitIciItemsColorImage, bool>> predicate,
+        Expression<Func<BIT_ICI_ItemsColorImages, TResult>> selector,
+        Expression<Func<BIT_ICI_ItemsColorImages, bool>> predicate,
         bool asNoTracking = true,
         bool IgnoreQueryFilters = false,
-        params Expression<Func<BitIciItemsColorImage, object>>[] includeProperties);
+        params Expression<Func<BIT_ICI_ItemsColorImages, object>>[] includeProperties);
 
 
-        Task<BitIciItemsColorImage> AddAsync(BitIciItemsColorImage entity);
+        Task<BIT_ICI_ItemsColorImages> AddAsync(BIT_ICI_ItemsColorImages entity);
 
-        Task AddRange(IEnumerable<BitIciItemsColorImage> entities);
+        Task AddRange(IEnumerable<BIT_ICI_ItemsColorImages> entities);
 
 
-        Task EditAsync(BitIciItemsColorImage entity);
+        Task EditAsync(BIT_ICI_ItemsColorImages entity);
 
-        Task EditRangeAsync(IEnumerable<BitIciItemsColorImage> entities);
+        Task EditRangeAsync(IEnumerable<BIT_ICI_ItemsColorImages> entities);
 
 
         Task<PagingResult<GetItemColorImagesListResult>> GetItemColorImagesList(GetItemColorImagesListParam param);

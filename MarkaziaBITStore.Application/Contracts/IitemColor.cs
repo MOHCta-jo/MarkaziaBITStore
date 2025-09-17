@@ -1,6 +1,6 @@
 ﻿using MarkaziaBITStore.Application.DTOs.PagingParamDTOs;
 using MarkaziaBITStore.Application.DTOs.ResultDTOs;
-using MarkaziaBITStore.Application.Entites;
+using MarkaziaBITStore.Application.Entities;
 using MarkaziaWebCommon.Models;
 using System;
 using System.Collections.Generic;
@@ -13,42 +13,42 @@ namespace MarkaziaBITStore.Application.Contracts
 {
     public interface IitemColor 
     {
-        BitItcItemsColor GetById(object id);
+        BIT_ITC_ItemsColor GetById(object id);
 
-        Task<BitItcItemsColor> GetBy(
-            Expression<Func<BitItcItemsColor, bool>> predicate,
+        Task<BIT_ITC_ItemsColor> GetBy(
+            Expression<Func<BIT_ITC_ItemsColor, bool>> predicate,
             bool asNoTracking = true,
             bool IgnoreQueryFilters = false,
-            Func<IQueryable<BitItcItemsColor>, IQueryable<BitItcItemsColor>> include = null);
+            Func<IQueryable<BIT_ITC_ItemsColor>, IQueryable<BIT_ITC_ItemsColor>> include = null);
 
 
-        Task<List<BitItcItemsColor>> GetByListAsync(
-        Expression<Func<BitItcItemsColor, bool>> predicate,
+        Task<List<BIT_ITC_ItemsColor>> GetByListAsync(
+        Expression<Func<BIT_ITC_ItemsColor, bool>> predicate,
         bool asNoTracking = true,
         bool ignoreQueryFilters = false,
-        params Expression<Func<BitItcItemsColor, object>>[] includeProperties);
+        params Expression<Func<BIT_ITC_ItemsColor, object>>[] includeProperties);
 
 
-        List<BitItcItemsColor> GetAll(bool asNoTracking = true);
+        List<BIT_ITC_ItemsColor> GetAll(bool asNoTracking = true);
 
-        IQueryable<BitItcItemsColor> GetAllAsQueryable(bool asNoTracking = true);
+        IQueryable<BIT_ITC_ItemsColor> GetAllAsQueryable(bool asNoTracking = true);
 
         Task<List<TResult>> GetByListWithSelector<TResult>(
-        Expression<Func<BitItcItemsColor, TResult>> selector,
-        Expression<Func<BitItcItemsColor, bool>> predicate,
+        Expression<Func<BIT_ITC_ItemsColor, TResult>> selector,
+        Expression<Func<BIT_ITC_ItemsColor, bool>> predicate,
         bool asNoTracking = true,
         bool IgnoreQueryFilters = false,
-        params Expression<Func<BitItcItemsColor, object>>[] includeProperties);
+        params Expression<Func<BIT_ITC_ItemsColor, object>>[] includeProperties);
 
 
-        Task<BitItcItemsColor> AddAsync(BitItcItemsColor entity);
+        Task<BIT_ITC_ItemsColor> AddAsync(BIT_ITC_ItemsColor entity);
 
-        Task AddRange(IEnumerable<BitItcItemsColor> entities);
+        Task AddRange(IEnumerable<BIT_ITC_ItemsColor> entities);
 
 
-        Task EditAsync(BitItcItemsColor entity);
+        Task EditAsync(BIT_ITC_ItemsColor entity);
 
-        Task EditRangeAsync(IEnumerable<BitItcItemsColor> entities);
+        Task EditRangeAsync(IEnumerable<BIT_ITC_ItemsColor> entities);
 
         Task<PagingResult<GetItemColorsListResult>> GetItemColorsList(GetItemColorsListParam param);
     }

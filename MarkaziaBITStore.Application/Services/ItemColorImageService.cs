@@ -2,7 +2,7 @@
 using MarkaziaBITStore.Application.Contracts;
 using MarkaziaBITStore.Application.DTOs.PagingParamDTOs;
 using MarkaziaBITStore.Application.DTOs.ResultDTOs;
-using MarkaziaBITStore.Application.Entites;
+using MarkaziaBITStore.Application.Entities;
 using MarkaziaBITStore.Application.Generic;
 using MarkaziaWebCommon.Models;
 using Microsoft.EntityFrameworkCore;
@@ -31,14 +31,14 @@ namespace MarkaziaBITStore.Application.Services
         }
 
 
-        public async Task<BitIciItemsColorImage> GetBy(Expression<Func<BitIciItemsColorImage, bool>> predicate,
+        public async Task<BIT_ICI_ItemsColorImages> GetBy(Expression<Func<BIT_ICI_ItemsColorImages, bool>> predicate,
         bool asNoTracking = true,
         bool IgnoreQueryFilters = false,
-        Func<IQueryable<BitIciItemsColorImage>, IQueryable<BitIciItemsColorImage>> include = null)
+        Func<IQueryable<BIT_ICI_ItemsColorImages>, IQueryable<BIT_ICI_ItemsColorImages>> include = null)
         {
             try
             {
-                IQueryable<BitIciItemsColorImage> query = _bitStoreDbContext.BitIciItemsColorImages;
+                IQueryable<BIT_ICI_ItemsColorImages> query = _bitStoreDbContext.BIT_ICI_ItemsColorImages;
 
                 if (include != null)
                     query = include(query);
@@ -55,16 +55,16 @@ namespace MarkaziaBITStore.Application.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error retrieving entity of type {EntityType}", typeof(BitIciItemsColorImage).Name);
+                logger.LogError(ex, "Error retrieving entity of type {EntityType}", typeof(BIT_ICI_ItemsColorImages).Name);
                 throw;
             }
         }
 
-        public BitIciItemsColorImage GetById(object id)
+        public BIT_ICI_ItemsColorImages GetById(object id)
         {
             try
             {
-                var ent = _bitStoreDbContext.BitIciItemsColorImages;
+                var ent = _bitStoreDbContext.BIT_ICI_ItemsColorImages;
                 var item = ent.Find(id);
 
                 if (item == null)
@@ -76,20 +76,20 @@ namespace MarkaziaBITStore.Application.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error retrieving entity by ID of type {EntityType}", typeof(BitIciItemsColorImage).Name);
+                logger.LogError(ex, "Error retrieving entity by ID of type {EntityType}", typeof(BIT_ICI_ItemsColorImages).Name);
                 throw;
             }
         }
 
-        public async Task<List<BitIciItemsColorImage>> GetByListAsync(
-         Expression<Func<BitIciItemsColorImage, bool>> predicate,
+        public async Task<List<BIT_ICI_ItemsColorImages>> GetByListAsync(
+         Expression<Func<BIT_ICI_ItemsColorImages, bool>> predicate,
          bool asNoTracking = true,
          bool ignoreQueryFilters = false,
-         params Expression<Func<BitIciItemsColorImage, object>>[] includeProperties)
+         params Expression<Func<BIT_ICI_ItemsColorImages, object>>[] includeProperties)
         {
             try
             {
-                IQueryable<BitIciItemsColorImage> query = _bitStoreDbContext.BitIciItemsColorImages;
+                IQueryable<BIT_ICI_ItemsColorImages> query = _bitStoreDbContext.BIT_ICI_ItemsColorImages;
 
                 if (includeProperties != null && includeProperties.Any())
                 {
@@ -112,19 +112,19 @@ namespace MarkaziaBITStore.Application.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error retrieving list of entities of type {EntityType}", typeof(BitIciItemsColorImage).Name);
+                logger.LogError(ex, "Error retrieving list of entities of type {EntityType}", typeof(BIT_ICI_ItemsColorImages).Name);
                 throw;
             }
         }
 
 
-        public async Task<List<TResult>> GetByListWithSelector<TResult>(Expression<Func<BitIciItemsColorImage, TResult>> selector,
-            Expression<Func<BitIciItemsColorImage, bool>> predicate, bool asNoTracking, bool IgnoreQueryFilters,
-            params Expression<Func<BitIciItemsColorImage, object>>[] includeProperties)
+        public async Task<List<TResult>> GetByListWithSelector<TResult>(Expression<Func<BIT_ICI_ItemsColorImages, TResult>> selector,
+            Expression<Func<BIT_ICI_ItemsColorImages, bool>> predicate, bool asNoTracking, bool IgnoreQueryFilters,
+            params Expression<Func<BIT_ICI_ItemsColorImages, object>>[] includeProperties)
         {
             try
             {
-                IQueryable<BitIciItemsColorImage> query = _bitStoreDbContext.BitIciItemsColorImages
+                IQueryable<BIT_ICI_ItemsColorImages> query = _bitStoreDbContext.BIT_ICI_ItemsColorImages
                     .Where(predicate);
 
                 if (includeProperties != null && includeProperties.Count() > 0)
@@ -145,40 +145,40 @@ namespace MarkaziaBITStore.Application.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error retrieving list with selector of type {EntityType}", typeof(BitIciItemsColorImage).Name);
+                logger.LogError(ex, "Error retrieving list with selector of type {EntityType}", typeof(BIT_ICI_ItemsColorImages).Name);
                 throw;
             }
         }
 
 
-        public List<BitIciItemsColorImage> GetAll(bool asNoTracking = true)
+        public List<BIT_ICI_ItemsColorImages> GetAll(bool asNoTracking = true)
         {
-            IQueryable<BitIciItemsColorImage> query = asNoTracking ? _bitStoreDbContext.BitIciItemsColorImages.AsNoTracking() : _bitStoreDbContext.BitIciItemsColorImages;
+            IQueryable<BIT_ICI_ItemsColorImages> query = asNoTracking ? _bitStoreDbContext.BIT_ICI_ItemsColorImages.AsNoTracking() : _bitStoreDbContext.BIT_ICI_ItemsColorImages;
 
             return query.ToList();
         }
 
-        public IQueryable<BitIciItemsColorImage> GetAllAsQueryable(bool asNoTracking = true)
+        public IQueryable<BIT_ICI_ItemsColorImages> GetAllAsQueryable(bool asNoTracking = true)
         {
-            IQueryable<BitIciItemsColorImage> query = asNoTracking ? _bitStoreDbContext.BitIciItemsColorImages.AsQueryable().AsNoTracking() :
-                _bitStoreDbContext.BitIciItemsColorImages.AsQueryable();
+            IQueryable<BIT_ICI_ItemsColorImages> query = asNoTracking ? _bitStoreDbContext.BIT_ICI_ItemsColorImages.AsQueryable().AsNoTracking() :
+                _bitStoreDbContext.BIT_ICI_ItemsColorImages.AsQueryable();
 
             return query;
         }
 
-        public async Task<BitIciItemsColorImage> AddAsync(BitIciItemsColorImage entity)
+        public async Task<BIT_ICI_ItemsColorImages> AddAsync(BIT_ICI_ItemsColorImages entity)
         {
 
             try
             {
-                _bitStoreDbContext.BitIciItemsColorImages.Add(entity);
+                _bitStoreDbContext.BIT_ICI_ItemsColorImages.Add(entity);
                 await _bitStoreDbContext.SaveChangesAsync();
 
                 return entity;
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error adding entity of type {EntityType}", typeof(BitIciItemsColorImage).Name);
+                logger.LogError(ex, "Error adding entity of type {EntityType}", typeof(BIT_ICI_ItemsColorImages).Name);
                 throw;
             }
 
@@ -186,37 +186,37 @@ namespace MarkaziaBITStore.Application.Services
         }
 
 
-        public async Task AddRange(IEnumerable<BitIciItemsColorImage> entities)
+        public async Task AddRange(IEnumerable<BIT_ICI_ItemsColorImages> entities)
         {
             try
             {
-                await _bitStoreDbContext.BitIciItemsColorImages.AddRangeAsync(entities);
+                await _bitStoreDbContext.BIT_ICI_ItemsColorImages.AddRangeAsync(entities);
 
                 await _bitStoreDbContext.SaveChangesAsync();
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error adding range of entities of type {EntityType}", typeof(BitIciItemsColorImage).Name);
+                logger.LogError(ex, "Error adding range of entities of type {EntityType}", typeof(BIT_ICI_ItemsColorImages).Name);
                 throw;
             }
         }
 
-        public bool Any(Expression<Func<BitIciItemsColorImage, bool>> predicate)
+        public bool Any(Expression<Func<BIT_ICI_ItemsColorImages, bool>> predicate)
         {
             try
             {
-                var result = _bitStoreDbContext.BitIciItemsColorImages.Any(predicate);
+                var result = _bitStoreDbContext.BIT_ICI_ItemsColorImages.Any(predicate);
                 return result;
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error checking existence of entity of type {EntityType}", typeof(BitIciItemsColorImage).Name);
+                logger.LogError(ex, "Error checking existence of entity of type {EntityType}", typeof(BIT_ICI_ItemsColorImages).Name);
                 throw;
             }
         }
 
 
-        public async Task EditAsync(BitIciItemsColorImage entity)
+        public async Task EditAsync(BIT_ICI_ItemsColorImages entity)
         {
             try
             {
@@ -228,19 +228,19 @@ namespace MarkaziaBITStore.Application.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error editing entity of type {EntityType}", typeof(BitIciItemsColorImage).Name);
+                logger.LogError(ex, "Error editing entity of type {EntityType}", typeof(BIT_ICI_ItemsColorImages).Name);
                 throw;
             }
         }
 
-        public async Task EditRangeAsync(IEnumerable<BitIciItemsColorImage> entities)
+        public async Task EditRangeAsync(IEnumerable<BIT_ICI_ItemsColorImages> entities)
         {
             if (entities is null || !entities.Any())
                 return; // No entities to edit, exit early
 
             try
             {
-                _bitStoreDbContext.BitIciItemsColorImages.UpdateRange(entities);
+                _bitStoreDbContext.BIT_ICI_ItemsColorImages.UpdateRange(entities);
 
                 await _bitStoreDbContext.SaveChangesAsync();
             }
@@ -253,15 +253,15 @@ namespace MarkaziaBITStore.Application.Services
 
         public async Task<PagingResult<GetItemColorImagesListResult>> GetItemColorImagesList(GetItemColorImagesListParam param)
         {
-            var imageIQ = _bitStoreDbContext.BitIciItemsColorImages
+            var imageIQ = _bitStoreDbContext.BIT_ICI_ItemsColorImages
                 .Select(img => new GetItemColorImagesListResult
                 {
-                    ImageID = img.BitIciId,
-                    ItemColorID = img.BitIciBitItcid,
-                    Sequence = img.BitIciSequence,
-                    ImageUrl = img.BitIciImageUrl,
-                    IsDefault = img.BitIciIsDefault,
-                    Status = img.BitIciStatus
+                    ImageID = img.BIT_ICI_ID,
+                    ItemColorID = img.BIT_ICI__BIT_ITCID,
+                    Sequence = img.BIT_ICI_ScreenSequence,
+                    ImageUrl = img.BIT_ICI_ImageURL,
+                    IsDefault = img.BIT_ICI_IsDefault,
+                    Status = img.BIT_ICI_Status
                 });
 
             // Apply filters

@@ -2,7 +2,7 @@
 using MarkaziaBITStore.Application.Contracts;
 using MarkaziaBITStore.Application.DTOs.PagingParamDTOs;
 using MarkaziaBITStore.Application.DTOs.ResultDTOs;
-using MarkaziaBITStore.Application.Entites;
+using MarkaziaBITStore.Application.Entities;
 using MarkaziaBITStore.Application.Generic;
 using MarkaziaWebCommon.Models;
 using Microsoft.EntityFrameworkCore;
@@ -31,14 +31,14 @@ namespace MarkaziaBITStore.Application.Services
         }
 
 
-        public async Task<BitCatCategory> GetBy(Expression<Func<BitCatCategory, bool>> predicate,
+        public async Task<BIT_CAT_Category> GetBy(Expression<Func<BIT_CAT_Category, bool>> predicate,
         bool asNoTracking = true,
         bool IgnoreQueryFilters = false,
-        Func<IQueryable<BitCatCategory>, IQueryable<BitCatCategory>> include = null)
+        Func<IQueryable<BIT_CAT_Category>, IQueryable<BIT_CAT_Category>> include = null)
         {
             try
             {
-                IQueryable<BitCatCategory> query = _bitStoreDbContext.BitCatCategories;
+                IQueryable<BIT_CAT_Category> query = _bitStoreDbContext.BIT_CAT_Category;
 
                 if (include != null)
                     query = include(query);
@@ -55,16 +55,16 @@ namespace MarkaziaBITStore.Application.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error retrieving entity of type {EntityType}", typeof(BitCatCategory).Name);
+                logger.LogError(ex, "Error retrieving entity of type {EntityType}", typeof(BIT_CAT_Category).Name);
                 throw;
             }
         }
 
-        public BitCatCategory GetById(object id)
+        public BIT_CAT_Category GetById(object id)
         {
             try
             {
-                var ent = _bitStoreDbContext.BitCatCategories;
+                var ent = _bitStoreDbContext.BIT_CAT_Category;
                 var item = ent.Find(id);
 
                 if (item == null)
@@ -76,20 +76,20 @@ namespace MarkaziaBITStore.Application.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error retrieving entity by ID of type {EntityType}", typeof(BitCatCategory).Name);
+                logger.LogError(ex, "Error retrieving entity by ID of type {EntityType}", typeof(BIT_CAT_Category).Name);
                 throw;
             }
         }
 
-        public async Task<List<BitCatCategory>> GetByListAsync(
-         Expression<Func<BitCatCategory, bool>> predicate,
+        public async Task<List<BIT_CAT_Category>> GetByListAsync(
+         Expression<Func<BIT_CAT_Category, bool>> predicate,
          bool asNoTracking = true,
          bool ignoreQueryFilters = false,
-         params Expression<Func<BitCatCategory, object>>[] includeProperties)
+         params Expression<Func<BIT_CAT_Category, object>>[] includeProperties)
         {
             try
             {
-                IQueryable<BitCatCategory> query = _bitStoreDbContext.BitCatCategories;
+                IQueryable<BIT_CAT_Category> query = _bitStoreDbContext.BIT_CAT_Category;
 
                 if (includeProperties != null && includeProperties.Any())
                 {
@@ -112,19 +112,19 @@ namespace MarkaziaBITStore.Application.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error retrieving list of entities of type {EntityType}", typeof(BitCatCategory).Name);
+                logger.LogError(ex, "Error retrieving list of entities of type {EntityType}", typeof(BIT_CAT_Category).Name);
                 throw;
             }
         }
 
 
-        public async Task<List<TResult>> GetByListWithSelector<TResult>(Expression<Func<BitCatCategory, TResult>> selector,
-            Expression<Func<BitCatCategory, bool>> predicate, bool asNoTracking, bool IgnoreQueryFilters,
-            params Expression<Func<BitCatCategory, object>>[] includeProperties)
+        public async Task<List<TResult>> GetByListWithSelector<TResult>(Expression<Func<BIT_CAT_Category, TResult>> selector,
+            Expression<Func<BIT_CAT_Category, bool>> predicate, bool asNoTracking, bool IgnoreQueryFilters,
+            params Expression<Func<BIT_CAT_Category, object>>[] includeProperties)
         {
             try
             {
-                IQueryable<BitCatCategory> query = _bitStoreDbContext.BitCatCategories
+                IQueryable<BIT_CAT_Category> query = _bitStoreDbContext.BIT_CAT_Category
                     .Where(predicate);
 
                 if (includeProperties != null && includeProperties.Count() > 0)
@@ -145,40 +145,41 @@ namespace MarkaziaBITStore.Application.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error retrieving list with selector of type {EntityType}", typeof(BitCatCategory).Name);
+                logger.LogError(ex, "Error retrieving list with selector of type {EntityType}", typeof(BIT_CAT_Category).Name);
                 throw;
             }
         }
 
 
-        public List<BitCatCategory> GetAll(bool asNoTracking = true)
+        public List<BIT_CAT_Category> GetAll(bool asNoTracking = true)
         {
-            IQueryable<BitCatCategory> query = asNoTracking ? _bitStoreDbContext.BitCatCategories.AsNoTracking() : _bitStoreDbContext.BitCatCategories;
+            IQueryable<BIT_CAT_Category> query = asNoTracking ? _bitStoreDbContext.BIT_CAT_Category.AsNoTracking() :
+                _bitStoreDbContext.BIT_CAT_Category;
 
             return query.ToList();
         }
 
-        public IQueryable<BitCatCategory> GetAllAsQueryable(bool asNoTracking = true)
+        public IQueryable<BIT_CAT_Category> GetAllAsQueryable(bool asNoTracking = true)
         {
-            IQueryable<BitCatCategory> query = asNoTracking ? _bitStoreDbContext.BitCatCategories.AsQueryable().AsNoTracking() :
-                _bitStoreDbContext.BitCatCategories.AsQueryable();
+            IQueryable<BIT_CAT_Category> query = asNoTracking ? _bitStoreDbContext.BIT_CAT_Category.AsQueryable().AsNoTracking() :
+                _bitStoreDbContext.BIT_CAT_Category.AsQueryable();
 
             return query;
         }
 
-        public async Task<BitCatCategory> AddAsync(BitCatCategory entity)
+        public async Task<BIT_CAT_Category> AddAsync(BIT_CAT_Category entity)
         {
 
             try
             {
-                _bitStoreDbContext.BitCatCategories.Add(entity);
+                _bitStoreDbContext.BIT_CAT_Category.Add(entity);
                 await _bitStoreDbContext.SaveChangesAsync();
 
                 return entity;
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error adding entity of type {EntityType}", typeof(BitCatCategory).Name);
+                logger.LogError(ex, "Error adding entity of type {EntityType}", typeof(BIT_CAT_Category).Name);
                 throw;
             }
 
@@ -186,37 +187,37 @@ namespace MarkaziaBITStore.Application.Services
         }
 
 
-        public async Task AddRange(IEnumerable<BitCatCategory> entities)
+        public async Task AddRange(IEnumerable<BIT_CAT_Category> entities)
         {
             try
             {
-                await _bitStoreDbContext.BitCatCategories.AddRangeAsync(entities);
+                await _bitStoreDbContext.BIT_CAT_Category.AddRangeAsync(entities);
 
                 await _bitStoreDbContext.SaveChangesAsync();
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error adding range of entities of type {EntityType}", typeof(BitCatCategory).Name);
+                logger.LogError(ex, "Error adding range of entities of type {EntityType}", typeof(BIT_CAT_Category).Name);
                 throw;
             }
         }
 
-        public bool Any(Expression<Func<BitCatCategory, bool>> predicate)
+        public bool Any(Expression<Func<BIT_CAT_Category, bool>> predicate)
         {
             try
             {
-                var result = _bitStoreDbContext.BitCatCategories.Any(predicate);
+                var result = _bitStoreDbContext.BIT_CAT_Category.Any(predicate);
                 return result;
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error checking existence of entity of type {EntityType}", typeof(BitCatCategory).Name);
+                logger.LogError(ex, "Error checking existence of entity of type {EntityType}", typeof(BIT_CAT_Category).Name);
                 throw;
             }
         }
 
 
-        public async Task EditAsync(BitCatCategory entity)
+        public async Task EditAsync(BIT_CAT_Category entity)
         {
             try
             {
@@ -228,19 +229,19 @@ namespace MarkaziaBITStore.Application.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error editing entity of type {EntityType}", typeof(BitCatCategory).Name);
+                logger.LogError(ex, "Error editing entity of type {EntityType}", typeof(BIT_CAT_Category).Name);
                 throw;
             }
         }
 
-        public async Task EditRangeAsync(IEnumerable<BitCatCategory> entities)
+        public async Task EditRangeAsync(IEnumerable<BIT_CAT_Category> entities)
         {
             if (entities is null || !entities.Any())
                 return; // No entities to edit, exit early
 
             try
             {
-                _bitStoreDbContext.BitCatCategories.UpdateRange(entities);
+                _bitStoreDbContext.BIT_CAT_Category.UpdateRange(entities);
 
                 await _bitStoreDbContext.SaveChangesAsync();
             }
@@ -253,14 +254,14 @@ namespace MarkaziaBITStore.Application.Services
 
         public async Task<PagingResult<GetCategoriesListResult>> GetCategoriesList(GetCategoriesListParam param)
         {
-            var categoryIQ = _bitStoreDbContext.BitCatCategories
+            var categoryIQ = _bitStoreDbContext.BIT_CAT_Category
                 .Select(category => new GetCategoriesListResult
                 {
-                    CategoryID = category.BitCatId,
-                    NameEn = category.BitCatNameEn,
-                    NameAr = category.BitCatNameAr,
-                    IconUrl = category.BitCatIconUrl,
-                    IsActive = category.BitCatIsActive
+                    CategoryID = category.BIT_CAT_ID,
+                    NameEn = category.BIT_CAT_NameEN,
+                    NameAr = category.BIT_CAT_NameAR,
+                    IconUrl = category.BIT_CAT_IconURL,
+                    IsActive = category.BIT_CAT_IsActive
                 });
 
             // Apply filters

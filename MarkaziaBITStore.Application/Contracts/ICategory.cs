@@ -1,6 +1,6 @@
 ﻿using MarkaziaBITStore.Application.DTOs.PagingParamDTOs;
 using MarkaziaBITStore.Application.DTOs.ResultDTOs;
-using MarkaziaBITStore.Application.Entites;
+using MarkaziaBITStore.Application.Entities;
 using MarkaziaWebCommon.Models;
 using System;
 using System.Collections.Generic;
@@ -13,42 +13,42 @@ namespace MarkaziaBITStore.Application.Contracts
 {
     public interface ICategory
     {
-        BitCatCategory GetById(object id);
+        BIT_CAT_Category GetById(object id);
 
-        Task<BitCatCategory> GetBy(
-            Expression<Func<BitCatCategory, bool>> predicate,
+        Task<BIT_CAT_Category> GetBy(
+            Expression<Func<BIT_CAT_Category, bool>> predicate,
             bool asNoTracking = true,
             bool IgnoreQueryFilters = false,
-            Func<IQueryable<BitCatCategory>, IQueryable<BitCatCategory>> include = null);
+            Func<IQueryable<BIT_CAT_Category>, IQueryable<BIT_CAT_Category>> include = null);
 
 
-        Task<List<BitCatCategory>> GetByListAsync(
-        Expression<Func<BitCatCategory, bool>> predicate,
+        Task<List<BIT_CAT_Category>> GetByListAsync(
+        Expression<Func<BIT_CAT_Category, bool>> predicate,
         bool asNoTracking = true,
         bool ignoreQueryFilters = false,
-        params Expression<Func<BitCatCategory, object>>[] includeProperties);
+        params Expression<Func<BIT_CAT_Category, object>>[] includeProperties);
 
 
-        List<BitCatCategory> GetAll(bool asNoTracking = true);
+        List<BIT_CAT_Category> GetAll(bool asNoTracking = true);
 
-        IQueryable<BitCatCategory> GetAllAsQueryable(bool asNoTracking = true);
+        IQueryable<BIT_CAT_Category> GetAllAsQueryable(bool asNoTracking = true);
 
         Task<List<TResult>> GetByListWithSelector<TResult>(
-        Expression<Func<BitCatCategory, TResult>> selector,
-        Expression<Func<BitCatCategory, bool>> predicate,
+        Expression<Func<BIT_CAT_Category, TResult>> selector,
+        Expression<Func<BIT_CAT_Category, bool>> predicate,
         bool asNoTracking = true,
         bool IgnoreQueryFilters = false,
-        params Expression<Func<BitCatCategory, object>>[] includeProperties);
+        params Expression<Func<BIT_CAT_Category, object>>[] includeProperties);
 
 
-        Task<BitCatCategory> AddAsync(BitCatCategory entity);
+        Task<BIT_CAT_Category> AddAsync(BIT_CAT_Category entity);
 
-        Task AddRange(IEnumerable<BitCatCategory> entities);
+        Task AddRange(IEnumerable<BIT_CAT_Category> entities);
 
 
-        Task EditAsync(BitCatCategory entity);
+        Task EditAsync(BIT_CAT_Category entity);
 
-        Task EditRangeAsync(IEnumerable<BitCatCategory> entities);
+        Task EditRangeAsync(IEnumerable<BIT_CAT_Category> entities);
         Task<PagingResult<GetCategoriesListResult>> GetCategoriesList(GetCategoriesListParam param);
     }
 }

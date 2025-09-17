@@ -2,6 +2,7 @@
 //using MarkaziaBITStore.ApplicationDBContext;
 //using MarkaziaBITStore.Services;
 using MarkaziaBITStore.Application.ApplicationDBContext;
+using MarkaziaBITStore.Application.Middleware;
 using MarkaziaBITStore.Settings;
 using MarkaziaWebCommon.Utils.Swagger;
 using MarkaziaWebCommon.Utils.VLog;
@@ -24,7 +25,7 @@ public class Program
         builder.AddServiceDefaults();
 
         builder.Services.AddDbContext<BitStoreDbContext>(options =>
-        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionVPN")));
 
         builder.AddVLog(new CreateLoggerParam
         {
@@ -130,7 +131,18 @@ public class Program
         {
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "MarkaziaBITStore API v1"));
+            app.UseDeveloperExceptionPage();
+
         }
+        else
+        {
+            // Use custom error handling for production
+            app.UseExceptionHandler("/error");
+        }
+
+     
+
+        app.UseMiddleware<ExceptionHandlingMiddleware>();
 
         app.UseHttpsRedirection();
 

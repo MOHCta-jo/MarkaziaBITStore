@@ -3,7 +3,7 @@ using MarkaziaBITStore.Application.Contracts.User;
 using MarkaziaBITStore.Application.DTOs.PagingParamDTOs;
 using MarkaziaBITStore.Application.DTOs.RequestDTOs;
 using MarkaziaBITStore.Application.DTOs.ResultDTOs;
-using MarkaziaBITStore.Application.Entites;
+using MarkaziaBITStore.Application.Entities;
 using MarkaziaBITStore.Application.Services;
 using MarkaziaBITStore.Application.DTOs.ResponseDTOs;
 using MarkaziaWebCommon.Models;
@@ -73,27 +73,27 @@ namespace MarkaziaBITStore.Controllers
         public async Task<IActionResult> GetById(int id)
         {
             var entity = await _supplierInvoiceHeader.GetBy(
-                x => x.BitSihId == id,
-                include: q => q.Include(h => h.BitSidSupplierInvoiceDetails));
+                x => x.BIT_SIH_ID == id,
+                include: q => q.Include(h => h.BIT_SID_SupplierInvoiceDetails));
 
             if (entity == null) return NotFound();
 
             var response = new SupplierInvoiceHeaderResponseDto
             {
-                Id = entity.BitSihId,
-                SupplierId = entity.BitSihSupplierId,
-                SupplierInvNo = entity.BitSihSupplierInvNo,
-                SupplierInvDate = entity.BitSihSupplierInvDate,
-                SupplierInvoiceAmountNet = entity.BitSihSupplierInvoiceAmountNet,
-                Cancelled = entity.BitSihCancelled,
-                Details = entity.BitSidSupplierInvoiceDetails.Select(d => new SupplierInvoiceDetailResponseDto
+                Id = entity.BIT_SIH_ID,
+                SupplierId = entity.BIT_SIH_SupplierID,
+                SupplierInvNo = entity.BIT_SIH_SupplierInvNo,
+                SupplierInvDate = entity.BIT_SIH_SupplierInvDate,
+                SupplierInvoiceAmountNet = entity.BIT_SIH_SupplierInvoiceAmountNet,
+                Cancelled = entity.BIT_SIH_Cancelled,
+                Details = entity.BIT_SID_SupplierInvoiceDetails.Select(d => new SupplierInvoiceDetailResponseDto
                 {
-                    Id = d.BitSidId,
-                    HeaderId = d.BitSidBitSihid,
-                    ItemColorId = d.BitSidBitItcid,
-                    Quantity = d.BitSidQuantity,
-                    UnitPrice = d.BitSidUnitPrice,
-                    Cancelled = d.BitSidCancelled
+                    Id = d.BIT_SID_ID,
+                    HeaderId = d.BIT_SID__BIT_SIHID,
+                    ItemColorId = d.BIT_SID__BIT_ITCID,
+                    Quantity = d.BIT_SID_Quantity,
+                    UnitPrice = d.BIT_SID_UnitPrice,
+                    Cancelled = d.BIT_SID_Cancelled
                 }).ToList()
             };
 
@@ -105,19 +105,19 @@ namespace MarkaziaBITStore.Controllers
         {
             try
             {
-                var entity = new BitSihSupplierInvoiceHeader
+                var entity = new BIT_SIH_SupplierInvoiceHeader
                 {
-                    BitSihSupplierInvNo = dto.SupplierInvNo,
-                    BitSihSupplierInvDate = dto.SupplierInvDate,
-                    BitSihSupplierInvoiceAmountNet = dto.SupplierInvoiceAmountNet,
-                    BitSihBitUsridEnterUser = currentUserID,
-                    BitSihEnterDate = DateOnly.FromDateTime(DateTime.UtcNow),
-                    BitSihEnterTime = TimeOnly.FromDateTime(DateTime.UtcNow)
+                    BIT_SIH_SupplierInvNo = dto.SupplierInvNo,
+                    BIT_SIH_SupplierInvDate = dto.SupplierInvDate,
+                    BIT_SIH_SupplierInvoiceAmountNet = dto.SupplierInvoiceAmountNet,
+                    BIT_SIH__MAS_USRID_EnterUser = currentUserID,
+                    BIT_SIH_EnterDate = DateOnly.FromDateTime(DateTime.UtcNow),
+                    BIT_SIH_EnterTime = TimeOnly.FromDateTime(DateTime.UtcNow)
                 };
 
                 await _supplierInvoiceHeader.AddAsync(entity);
 
-                return Ok(new { entity.BitSihId });
+                return Ok(new { entity.BIT_SIH_ID });
             }
             catch (Exception ex)
             {
@@ -130,15 +130,15 @@ namespace MarkaziaBITStore.Controllers
         {
             try
             {
-                var entity = await _supplierInvoiceHeader.GetBy(x => x.BitSihSupplierId == id);
+                var entity = await _supplierInvoiceHeader.GetBy(x => x.BIT_SIH_SupplierID == id);
                 if (entity == null) return NotFound();
 
-                entity.BitSihSupplierInvNo = dto.SupplierInvNo;
-                entity.BitSihSupplierInvDate = dto.SupplierInvDate;
-                entity.BitSihSupplierInvoiceAmountNet = dto.SupplierInvoiceAmountNet;
-                entity.BitSihBitUsridModUser = currentUserID;
-                entity.BitSihModDate = DateOnly.FromDateTime(DateTime.UtcNow);
-                entity.BitSihModTime = TimeOnly.FromDateTime(DateTime.UtcNow);
+                entity.BIT_SIH_SupplierInvNo = dto.SupplierInvNo;
+                entity.BIT_SIH_SupplierInvDate = dto.SupplierInvDate;
+                entity.BIT_SIH_SupplierInvoiceAmountNet = dto.SupplierInvoiceAmountNet;
+                entity.BIT_SIH__MAS_USRID_ModUser = currentUserID;
+                entity.BIT_SIH_ModDate = DateOnly.FromDateTime(DateTime.UtcNow);
+                entity.BIT_SIH_ModTime = TimeOnly.FromDateTime(DateTime.UtcNow);
 
                 await _supplierInvoiceHeader.EditAsync(entity);
 
@@ -154,13 +154,13 @@ namespace MarkaziaBITStore.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var entity = await _supplierInvoiceHeader.GetBy(x=> x.BitSihSupplierId == id);
+            var entity = await _supplierInvoiceHeader.GetBy(x=> x.BIT_SIH_SupplierID == id);
             if (entity == null) return NotFound();
 
-            entity.BitSihCancelled = true;
-            entity.BitSihBitUsridCancelledUser = currentUserID;
-            entity.BitSihCancelledDate = DateOnly.FromDateTime(DateTime.UtcNow);
-            entity.BitSihCancelledTime = TimeOnly.FromDateTime(DateTime.UtcNow);
+            entity.BIT_SIH_Cancelled = true;
+            entity.BIT_SIH__MAS_USRID_CancelledUser = currentUserID;
+            entity.BIT_SIH_CancelledDate = DateOnly.FromDateTime(DateTime.UtcNow);
+            entity.BIT_SIH_CancelledTime = TimeOnly.FromDateTime(DateTime.UtcNow);
 
             await _supplierInvoiceHeader.EditAsync(entity);
 

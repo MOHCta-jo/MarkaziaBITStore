@@ -2,7 +2,7 @@
 using MarkaziaBITStore.Application.Contracts;
 using MarkaziaBITStore.Application.DTOs.PagingParamDTOs;
 using MarkaziaBITStore.Application.DTOs.ResultDTOs;
-using MarkaziaBITStore.Application.Entites;
+using MarkaziaBITStore.Application.Entities;
 using MarkaziaBITStore.Application.Generic;
 using MarkaziaWebCommon.Models;
 using Microsoft.EntityFrameworkCore;
@@ -32,14 +32,14 @@ namespace MarkaziaBITStore.Application.Services
         }
 
 
-        public async Task<BitSidSupplierInvoiceDetail> GetBy(Expression<Func<BitSidSupplierInvoiceDetail, bool>> predicate,
+        public async Task<BIT_SID_SupplierInvoiceDetails> GetBy(Expression<Func<BIT_SID_SupplierInvoiceDetails, bool>> predicate,
         bool asNoTracking = true,
         bool IgnoreQueryFilters = false,
-        Func<IQueryable<BitSidSupplierInvoiceDetail>, IQueryable<BitSidSupplierInvoiceDetail>> include = null)
+        Func<IQueryable<BIT_SID_SupplierInvoiceDetails>, IQueryable<BIT_SID_SupplierInvoiceDetails>> include = null)
         {
             try
             {
-                IQueryable<BitSidSupplierInvoiceDetail> query = _bitStoreDbContext.BitSidSupplierInvoiceDetails;
+                IQueryable<BIT_SID_SupplierInvoiceDetails> query = _bitStoreDbContext.BIT_SID_SupplierInvoiceDetails;
 
                 if (include != null)
                     query = include(query);
@@ -56,16 +56,16 @@ namespace MarkaziaBITStore.Application.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error retrieving entity of type {EntityType}", typeof(BitSidSupplierInvoiceDetail).Name);
+                logger.LogError(ex, "Error retrieving entity of type {EntityType}", typeof(BIT_SID_SupplierInvoiceDetails).Name);
                 throw;
             }
         }
 
-        public BitSidSupplierInvoiceDetail GetById(object id)
+        public BIT_SID_SupplierInvoiceDetails GetById(object id)
         {
             try
             {
-                var ent = _bitStoreDbContext.BitSidSupplierInvoiceDetails;
+                var ent = _bitStoreDbContext.BIT_SID_SupplierInvoiceDetails;
                 var item = ent.Find(id);
 
                 if (item == null)
@@ -77,20 +77,20 @@ namespace MarkaziaBITStore.Application.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error retrieving entity by ID of type {EntityType}", typeof(BitSidSupplierInvoiceDetail).Name);
+                logger.LogError(ex, "Error retrieving entity by ID of type {EntityType}", typeof(BIT_SID_SupplierInvoiceDetails).Name);
                 throw;
             }
         }
 
-        public async Task<List<BitSidSupplierInvoiceDetail>> GetByListAsync(
-         Expression<Func<BitSidSupplierInvoiceDetail, bool>> predicate,
+        public async Task<List<BIT_SID_SupplierInvoiceDetails>> GetByListAsync(
+         Expression<Func<BIT_SID_SupplierInvoiceDetails, bool>> predicate,
          bool asNoTracking = true,
          bool ignoreQueryFilters = false,
-         params Expression<Func<BitSidSupplierInvoiceDetail, object>>[] includeProperties)
+         params Expression<Func<BIT_SID_SupplierInvoiceDetails, object>>[] includeProperties)
         {
             try
             {
-                IQueryable<BitSidSupplierInvoiceDetail> query = _bitStoreDbContext.BitSidSupplierInvoiceDetails;
+                IQueryable<BIT_SID_SupplierInvoiceDetails> query = _bitStoreDbContext.BIT_SID_SupplierInvoiceDetails;
 
                 if (includeProperties != null && includeProperties.Any())
                 {
@@ -113,19 +113,19 @@ namespace MarkaziaBITStore.Application.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error retrieving list of entities of type {EntityType}", typeof(BitSidSupplierInvoiceDetail).Name);
+                logger.LogError(ex, "Error retrieving list of entities of type {EntityType}", typeof(BIT_SID_SupplierInvoiceDetails).Name);
                 throw;
             }
         }
 
 
-        public async Task<List<TResult>> GetByListWithSelector<TResult>(Expression<Func<BitSidSupplierInvoiceDetail, TResult>> selector,
-            Expression<Func<BitSidSupplierInvoiceDetail, bool>> predicate, bool asNoTracking, bool IgnoreQueryFilters,
-            params Expression<Func<BitSidSupplierInvoiceDetail, object>>[] includeProperties)
+        public async Task<List<TResult>> GetByListWithSelector<TResult>(Expression<Func<BIT_SID_SupplierInvoiceDetails, TResult>> selector,
+            Expression<Func<BIT_SID_SupplierInvoiceDetails, bool>> predicate, bool asNoTracking, bool IgnoreQueryFilters,
+            params Expression<Func<BIT_SID_SupplierInvoiceDetails, object>>[] includeProperties)
         {
             try
             {
-                IQueryable<BitSidSupplierInvoiceDetail> query = _bitStoreDbContext.BitSidSupplierInvoiceDetails
+                IQueryable<BIT_SID_SupplierInvoiceDetails> query = _bitStoreDbContext.BIT_SID_SupplierInvoiceDetails
                     .Where(predicate);
 
                 if (includeProperties != null && includeProperties.Count() > 0)
@@ -146,40 +146,40 @@ namespace MarkaziaBITStore.Application.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error retrieving list with selector of type {EntityType}", typeof(BitSidSupplierInvoiceDetail).Name);
+                logger.LogError(ex, "Error retrieving list with selector of type {EntityType}", typeof(BIT_SID_SupplierInvoiceDetails).Name);
                 throw;
             }
         }
 
 
-        public List<BitSidSupplierInvoiceDetail> GetAll(bool asNoTracking = true)
+        public List<BIT_SID_SupplierInvoiceDetails> GetAll(bool asNoTracking = true)
         {
-            IQueryable<BitSidSupplierInvoiceDetail> query = asNoTracking ? _bitStoreDbContext.BitSidSupplierInvoiceDetails.AsNoTracking() : _bitStoreDbContext.BitSidSupplierInvoiceDetails;
+            IQueryable<BIT_SID_SupplierInvoiceDetails> query = asNoTracking ? _bitStoreDbContext.BIT_SID_SupplierInvoiceDetails.AsNoTracking() : _bitStoreDbContext.BIT_SID_SupplierInvoiceDetails;
 
             return query.ToList();
         }
 
-        public IQueryable<BitSidSupplierInvoiceDetail> GetAllAsQueryable(bool asNoTracking = true)
+        public IQueryable<BIT_SID_SupplierInvoiceDetails> GetAllAsQueryable(bool asNoTracking = true)
         {
-            IQueryable<BitSidSupplierInvoiceDetail> query = asNoTracking ? _bitStoreDbContext.BitSidSupplierInvoiceDetails.AsQueryable().AsNoTracking() :
-                _bitStoreDbContext.BitSidSupplierInvoiceDetails.AsQueryable();
+            IQueryable<BIT_SID_SupplierInvoiceDetails> query = asNoTracking ? _bitStoreDbContext.BIT_SID_SupplierInvoiceDetails.AsQueryable().AsNoTracking() :
+                _bitStoreDbContext.BIT_SID_SupplierInvoiceDetails.AsQueryable();
 
             return query;
         }
 
-        public async Task<BitSidSupplierInvoiceDetail> AddAsync(BitSidSupplierInvoiceDetail entity)
+        public async Task<BIT_SID_SupplierInvoiceDetails> AddAsync(BIT_SID_SupplierInvoiceDetails entity)
         {
 
             try
             {
-                _bitStoreDbContext.BitSidSupplierInvoiceDetails.Add(entity);
+                _bitStoreDbContext.BIT_SID_SupplierInvoiceDetails.Add(entity);
                 await _bitStoreDbContext.SaveChangesAsync();
 
                 return entity;
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error adding entity of type {EntityType}", typeof(BitSidSupplierInvoiceDetail).Name);
+                logger.LogError(ex, "Error adding entity of type {EntityType}", typeof(BIT_SID_SupplierInvoiceDetails).Name);
                 throw;
             }
 
@@ -187,37 +187,37 @@ namespace MarkaziaBITStore.Application.Services
         }
 
 
-        public async Task AddRange(IEnumerable<BitSidSupplierInvoiceDetail> entities)
+        public async Task AddRange(IEnumerable<BIT_SID_SupplierInvoiceDetails> entities)
         {
             try
             {
-                await _bitStoreDbContext.BitSidSupplierInvoiceDetails.AddRangeAsync(entities);
+                await _bitStoreDbContext.BIT_SID_SupplierInvoiceDetails.AddRangeAsync(entities);
 
                 await _bitStoreDbContext.SaveChangesAsync();
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error adding range of entities of type {EntityType}", typeof(BitSidSupplierInvoiceDetail).Name);
+                logger.LogError(ex, "Error adding range of entities of type {EntityType}", typeof(BIT_SID_SupplierInvoiceDetails).Name);
                 throw;
             }
         }
 
-        public bool Any(Expression<Func<BitSidSupplierInvoiceDetail, bool>> predicate)
+        public bool Any(Expression<Func<BIT_SID_SupplierInvoiceDetails, bool>> predicate)
         {
             try
             {
-                var result = _bitStoreDbContext.BitSidSupplierInvoiceDetails.Any(predicate);
+                var result = _bitStoreDbContext.BIT_SID_SupplierInvoiceDetails.Any(predicate);
                 return result;
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error checking existence of entity of type {EntityType}", typeof(BitSidSupplierInvoiceDetail).Name);
+                logger.LogError(ex, "Error checking existence of entity of type {EntityType}", typeof(BIT_SID_SupplierInvoiceDetails).Name);
                 throw;
             }
         }
 
 
-        public async Task EditAsync(BitSidSupplierInvoiceDetail entity)
+        public async Task EditAsync(BIT_SID_SupplierInvoiceDetails entity)
         {
             try
             {
@@ -229,19 +229,19 @@ namespace MarkaziaBITStore.Application.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error editing entity of type {EntityType}", typeof(BitSidSupplierInvoiceDetail).Name);
+                logger.LogError(ex, "Error editing entity of type {EntityType}", typeof(BIT_SID_SupplierInvoiceDetails).Name);
                 throw;
             }
         }
 
-        public async Task EditRangeAsync(IEnumerable<BitSidSupplierInvoiceDetail> entities)
+        public async Task EditRangeAsync(IEnumerable<BIT_SID_SupplierInvoiceDetails> entities)
         {
             if (entities is null || !entities.Any())
                 return; // No entities to edit, exit early
 
             try
             {
-                _bitStoreDbContext.BitSidSupplierInvoiceDetails.UpdateRange(entities);
+                _bitStoreDbContext.BIT_SID_SupplierInvoiceDetails.UpdateRange(entities);
 
                 await _bitStoreDbContext.SaveChangesAsync();
             }
@@ -255,17 +255,17 @@ namespace MarkaziaBITStore.Application.Services
         public async Task<PagingResult<GetSupplierInvoiceDetailsListResult>>
             GetSupplierInvoiceDetailsList(GetSupplierInvoiceDetailsListParam param)
         {
-            var detailIQ = _bitStoreDbContext.BitSidSupplierInvoiceDetails
+            var detailIQ = _bitStoreDbContext.BIT_SID_SupplierInvoiceDetails
                 .Select(d => new GetSupplierInvoiceDetailsListResult
                 {
-                    DetailID = d.BitSidId,
-                    HeaderID = d.BitSidBitSihid,
-                    ItemColorID = d.BitSidBitItcid,
-                    Quantity = d.BitSidQuantity,
-                    UnitPrice = d.BitSidUnitPrice,
-                    Status = d.BitSidStatus,
-                    TotalPrice = d.BitSidQuantity != null && d.BitSidUnitPrice != null ?
-                        d.BitSidQuantity.Value * d.BitSidUnitPrice.Value : (double?)null
+                    DetailID = d.BIT_SID_ID,
+                    HeaderID = d.BIT_SID__BIT_SIHID,
+                    ItemColorID = d.BIT_SID__BIT_ITCID,
+                    Quantity = d.BIT_SID_Quantity,
+                    UnitPrice = d.BIT_SID_UnitPrice,
+                    Status = d.BIT_SID_Status,
+                    TotalPrice = d.BIT_SID_Quantity != null && d.BIT_SID_UnitPrice != null ?
+                        d.BIT_SID_Quantity * d.BIT_SID_UnitPrice.Value : (double?)null
                 });
 
             // Apply filters

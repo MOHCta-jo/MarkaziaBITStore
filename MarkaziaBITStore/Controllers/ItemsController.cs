@@ -4,7 +4,7 @@ using MarkaziaBITStore.Application.DTOs;
 using MarkaziaBITStore.Application.DTOs.PagingParamDTOs;
 using MarkaziaBITStore.Application.DTOs.RequestDTOs;
 using MarkaziaBITStore.Application.DTOs.ResultDTOs;
-using MarkaziaBITStore.Application.Entites;
+using MarkaziaBITStore.Application.Entities;
 using MarkaziaBITStore.Application.Services;
 using MarkaziaBITStore.Application.DTOs.ResponseDTOs;
 using MarkaziaWebCommon.Models;
@@ -72,50 +72,50 @@ namespace MarkaziaBITStore.Controllers
         public async Task<IActionResult> GetById(int id)
         {
             var entity = await _itemService.GetBy(
-                x => x.BitItmId == id,
+                x => x.BIT_ITM_ID == id,
                 include: q => q
-                .Include(i => i.BitItcItemsColors)
-                    .ThenInclude(ic => ic.BitItcBitCol)
-                .Include(i => i.BitItcItemsColors)
-                    .ThenInclude(ic => ic.BitIciItemsColorImages)
-                .Include(i => i.BitItmBitCat)
+                .Include(i => i.BIT_ITC_ItemsColor)
+                    .ThenInclude(ic => ic.BIT_ITC__BIT_COL)
+                .Include(i => i.BIT_ITC_ItemsColor)
+                    .ThenInclude(ic => ic.BIT_ICI_ItemsColorImages)
+                .Include(i => i.BIT_ITM__BIT_CAT)
             );
 
             if (entity == null) return NotFound();
 
             var response = new ItemResponseDto
             {
-                Id = entity.BitItmId,
-                NameEn = entity.BitItmNameEn,
-                NameAr = entity.BitItmNameAr,
-                DescriptionEn = entity.BitItmDescriptionEn,
-                DescriptionAr = entity.BitItmDescriptionAr,
-                Points = entity.BitItmPoints,
-                Status = entity.BitItmStatus,
+                Id = entity.BIT_ITM_ID,
+                NameEn = entity.BIT_ITM_NameEN,
+                NameAr = entity.BIT_ITM_NameAR,
+                DescriptionEn = entity.BIT_ITM_DescriptionEN,
+                DescriptionAr = entity.BIT_ITM_DescriptionAR,
+                Points = entity.BIT_ITM_Points,
+                Status = entity.BIT_ITM_Status,
                 Category = new CategoryResponseDto
                 {
-                    Id = entity.BitItmBitCat.BitCatId,
-                    NameEn = entity.BitItmBitCat.BitCatNameEn,
-                    NameAr = entity.BitItmBitCat.BitCatNameAr,
-                    IconUrl = entity.BitItmBitCat.BitCatIconUrl,
-                    IsActive = entity.BitItmBitCat.BitCatIsActive
+                    Id = entity.BIT_ITM__BIT_CAT.BIT_CAT_ID,
+                    NameEn = entity.BIT_ITM__BIT_CAT.BIT_CAT_NameEN,
+                    NameAr = entity.BIT_ITM__BIT_CAT.BIT_CAT_NameAR,
+                    IconUrl = entity.BIT_ITM__BIT_CAT.BIT_CAT_IconURL,
+                    IsActive = entity.BIT_ITM__BIT_CAT.BIT_CAT_IsActive
                 },
-                Colors = entity.BitItcItemsColors.Select(c => new ItemColorResponseDto
+                Colors = entity.BIT_ITC_ItemsColor.Select(c => new ItemColorResponseDto
                 {
-                    Id = c.BitItcId,
-                    Status = c.BitItcStatus,
+                    Id = c.BIT_ITC_ID,
+                    Status = c.BIT_ITC_Status,
                     Color = new ColorResponseDto
                     {
-                        Id = c.BitItcBitCol.BitColId,
-                        NameEn = c.BitItcBitCol.BitColNameEn,
-                        NameAr = c.BitItcBitCol.BitColNameAr,
-                        HexCode = c.BitItcBitCol.BitColHexCode
+                        Id = c.BIT_ITC__BIT_COL.BIT_COL_ID,
+                        NameEn = c.BIT_ITC__BIT_COL.BIT_COL_NameEN,
+                        NameAr = c.BIT_ITC__BIT_COL.BIT_COL_NameAR,
+                        HexCode = c.BIT_ITC__BIT_COL.BIT_COL_HexCode
                     },
-                    Images = c.BitIciItemsColorImages.Select(img => new ItemColorImageResponseDto
+                    Images = c.BIT_ICI_ItemsColorImages.Select(img => new ItemColorImageResponseDto
                     {
-                        Id = img.BitIciId,
-                        ImageUrl = img.BitIciImageUrl,
-                        IsDefault = img.BitIciIsDefault
+                        Id = img.BIT_ICI_ID,
+                        ImageUrl = img.BIT_ICI_ImageURL,
+                        IsDefault = img.BIT_ICI_IsDefault
                     }).ToList()
                 }).ToList()
             };
@@ -129,53 +129,43 @@ namespace MarkaziaBITStore.Controllers
         {
             if (request == null) return BadRequest();
 
-            var entity = new BitItmItem
+            var entity = new BIT_ITM_Items
             {
-                BitItmBitCatid = request.CategoryId,
-                BitItmNameEn = request.NameEn,
-                BitItmNameAr = request.NameAr,
-                BitItmDescriptionEn = request.DescriptionEn,
-                BitItmDescriptionAr = request.DescriptionAr,
-                BitItmPoints = request.Points,
-                BitItmStatus = request.Status,
-                BitItmBitUsridEnterUser = currentUserID,
-                BitItmEnterDate = DateOnly.FromDateTime(DateTime.Now),
-                BitItmEnterTime = TimeOnly.FromDateTime(DateTime.Now)
+                BIT_ITM__BIT_CATID = request.CategoryId,
+                BIT_ITM_NameEN = request.NameEn,
+                BIT_ITM_NameAR = request.NameAr,
+                BIT_ITM_DescriptionEN = request.DescriptionEn,
+                BIT_ITM_DescriptionAR = request.DescriptionAr,
+                BIT_ITM_Points = request.Points,
+                BIT_ITM_Status = request.Status,
+                BIT_ITM__MAS_USRID_EnterUser = currentUserID,
+                BIT_ITM_EnterDate = DateOnly.FromDateTime(DateTime.Now),
+                BIT_ITM_EnterTime = TimeOnly.FromDateTime(DateTime.Now)
             };
 
-            var addedItem = await _itemService.AddAsync(entity);
+            var addedItem = await _itemService.AddAsync(entity,request.Colors);
 
-            var response = new ItemResponseDto
-            {
-                Id = addedItem.BitItmId,
-                NameEn = addedItem.BitItmNameEn,
-                NameAr = addedItem.BitItmNameAr,
-                DescriptionEn = addedItem.BitItmDescriptionEn,
-                DescriptionAr = addedItem.BitItmDescriptionAr,
-                Points = addedItem.BitItmPoints,
-                Status = addedItem.BitItmStatus
-            };
 
-            return CreatedAtAction(nameof(GetById), new { id = addedItem.BitItmId }, response);
+            return Ok("Added Successfully!");
         }
 
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] ItemRequestDto request)
         {
-            var entity = await _itemService.GetBy(x => x.BitItmId == id);
+            var entity = await _itemService.GetBy(x => x.BIT_ITM_ID == id);
             if (entity == null) return NotFound();
 
-            entity.BitItmBitCatid = request.CategoryId;
-            entity.BitItmNameEn = request.NameEn;
-            entity.BitItmNameAr = request.NameAr;
-            entity.BitItmDescriptionEn = request.DescriptionEn;
-            entity.BitItmDescriptionAr = request.DescriptionAr;
-            entity.BitItmPoints = request.Points;
-            entity.BitItmStatus = request.Status;
-            entity.BitItmBitUsridModUser = currentUserID;
-            entity.BitItmModDate = DateOnly.FromDateTime(DateTime.Now);
-            entity.BitItmModTime = TimeOnly.FromDateTime(DateTime.Now);
+            entity.BIT_ITM__BIT_CATID = request.CategoryId;
+            entity.BIT_ITM_NameEN = request.NameEn;
+            entity.BIT_ITM_NameAR = request.NameAr;
+            entity.BIT_ITM_DescriptionEN = request.DescriptionEn;
+            entity.BIT_ITM_DescriptionAR = request.DescriptionAr;
+            entity.BIT_ITM_Points = request.Points;
+            entity.BIT_ITM_Status = request.Status;
+            entity.BIT_ITM__MAS_USRID_ModUser = currentUserID;
+            entity.BIT_ITM_ModDate = DateOnly.FromDateTime(DateTime.Now);
+            entity.BIT_ITM_ModTime = TimeOnly.FromDateTime(DateTime.Now);
 
             await _itemService.EditAsync(entity);
             return NoContent();
@@ -218,13 +208,13 @@ namespace MarkaziaBITStore.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var entity = await _itemService.GetBy(x => x.BitItmId == id);
+            var entity = await _itemService.GetBy(x => x.BIT_ITM_ID == id);
             if (entity == null) return NotFound();
 
-            entity.BitItmCancelled = true;
-            entity.BitItmBitUsridCancelledUser = currentUserID;
-            entity.BitItmCancelledDate = DateOnly.FromDateTime(DateTime.Now);
-            entity.BitItmCancelledTime = TimeOnly.FromDateTime(DateTime.Now);
+            entity.BIT_ITM_Cancelled = true;
+            entity.BIT_ITM__MAS_USRID_CancelledUser = currentUserID;
+            entity.BIT_ITM_CancelledDate = DateOnly.FromDateTime(DateTime.Now);
+            entity.BIT_ITM_CancelledTime = TimeOnly.FromDateTime(DateTime.Now);
 
             await _itemService.EditAsync(entity);
             return NoContent();
@@ -234,12 +224,12 @@ namespace MarkaziaBITStore.Controllers
         [HttpGet("{id}/colors")]
         public async Task<IActionResult> GetColorsOfItem(int id)
         {
-            var colors = await _itemService.GetBy(x => x.BitItmId == id, true, false, x => x.Include(x => x.BitItcItemsColors))
+            var colors = await _itemService.GetBy(x => x.BIT_ITM_ID == id, true, false, x => x.Include(x => x.BIT_ITC_ItemsColor))
                 ;
 
-            if (colors.BitItcItemsColors == null) return NotFound();
+            if (colors.BIT_ITC_ItemsColor == null) return NotFound();
 
-            return Ok(colors.BitItcItemsColors);
+            return Ok(colors.BIT_ITC_ItemsColor);
         }
     }
 }

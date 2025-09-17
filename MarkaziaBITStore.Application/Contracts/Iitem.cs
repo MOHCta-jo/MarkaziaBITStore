@@ -2,7 +2,7 @@
 using MarkaziaBITStore.Application.DTOs.PagingParamDTOs;
 using MarkaziaBITStore.Application.DTOs.RequestDTOs;
 using MarkaziaBITStore.Application.DTOs.ResultDTOs;
-using MarkaziaBITStore.Application.Entites;
+using MarkaziaBITStore.Application.Entities;
 using MarkaziaBITStore.Application.DTOs.ResponseDTOs;
 using MarkaziaWebCommon.Models;
 using System;
@@ -17,39 +17,41 @@ namespace MarkaziaBITStore.Application.Contracts
 {
     public interface Iitem 
     {
-        BitItmItem GetById(object id);
+        BIT_ITM_Items GetById(object id);
 
-        Task<BitItmItem> GetBy(
-            Expression<Func<BitItmItem, bool>> predicate,
+        Task<BIT_ITM_Items> GetBy(
+            Expression<Func<BIT_ITM_Items, bool>> predicate,
             bool asNoTracking = true,
             bool IgnoreQueryFilters = false,
-            Func<IQueryable<BitItmItem>, IQueryable<BitItmItem>> include = null);
+            Func<IQueryable<BIT_ITM_Items>, IQueryable<BIT_ITM_Items>> include = null);
 
 
-        Task<List<BitItmItem>> GetByListAsync(
-        Expression<Func<BitItmItem, bool>> predicate,
+        Task<List<BIT_ITM_Items>> GetByListAsync(
+        Expression<Func<BIT_ITM_Items, bool>> predicate,
         bool asNoTracking = true,
         bool ignoreQueryFilters = false,
-        params Expression<Func<BitItmItem, object>>[] includeProperties);
+        params Expression<Func<BIT_ITM_Items, object>>[] includeProperties);
 
 
-        List<BitItmItem> GetAll(bool asNoTracking = true);
+        List<BIT_ITM_Items> GetAll(bool asNoTracking = true);
 
-        IQueryable<BitItmItem> GetAllAsQueryable(bool asNoTracking = true);
+        IQueryable<BIT_ITM_Items> GetAllAsQueryable(bool asNoTracking = true);
 
         Task<List<TResult>> GetByListWithSelector<TResult>(
-        Expression<Func<BitItmItem, TResult>> selector,
-        Expression<Func<BitItmItem, bool>> predicate,
+        Expression<Func<BIT_ITM_Items, TResult>> selector,
+        Expression<Func<BIT_ITM_Items, bool>> predicate,
         bool asNoTracking = true,
         bool IgnoreQueryFilters = false,
-        params Expression<Func<BitItmItem, object>>[] includeProperties);
+        params Expression<Func<BIT_ITM_Items, object>>[] includeProperties);
 
 
-        Task<BitItmItem> AddAsync(BitItmItem entity);
+        Task<BIT_ITM_Items> AddAsync(
+          BIT_ITM_Items entity,
+          List<ItemColortIncludeDto> colors);
 
         Task<IEnumerable<ItemResponseDto>> AddRangeAsync(IEnumerable<ItemRequestDto> items, int AddedBy);
 
-        Task EditAsync(BitItmItem entity);
+        Task EditAsync(BIT_ITM_Items entity);
 
         Task EditRangeAsync(IEnumerable<ItemUpdateRequestDto> entities, int ModifedBy);
 

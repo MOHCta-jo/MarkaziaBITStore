@@ -9,5 +9,13 @@
         public string? DescriptionAr { get; set; }
         public required int Points { get; set; }
         public int? Status { get; set; }
+
+        public List<ItemColortIncludeDto> Colors { get; set; }
+    }
+
+    public class ItemColortIncludeDto
+    {
+        public required int ColorId { get; set; }
+        public  int Status { get; set; }
     }
 }

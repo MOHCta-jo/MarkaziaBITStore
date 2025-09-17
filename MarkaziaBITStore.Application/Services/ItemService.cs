@@ -1,13 +1,14 @@
 ﻿using Azure.Core;
 using MarkaziaBITStore.Application.ApplicationDBContext;
 using MarkaziaBITStore.Application.Contracts;
+using MarkaziaBITStore.Application.CustomeValidations;
 using MarkaziaBITStore.Application.DTOs;
 using MarkaziaBITStore.Application.DTOs.PagingParamDTOs;
 using MarkaziaBITStore.Application.DTOs.RequestDTOs;
-using MarkaziaBITStore.Application.DTOs.ResultDTOs;
-using MarkaziaBITStore.Application.Entites;
-using MarkaziaBITStore.Application.Generic;
 using MarkaziaBITStore.Application.DTOs.ResponseDTOs;
+using MarkaziaBITStore.Application.DTOs.ResultDTOs;
+using MarkaziaBITStore.Application.Entities;
+using MarkaziaBITStore.Application.Generic;
 using MarkaziaWebCommon.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -42,11 +43,11 @@ namespace MarkaziaBITStore.Application.Services
         {
             var hasColors = await _itemColorService
                 .GetAllAsQueryable()
-                .AnyAsync(c => c.BitItcBitItmid == itemId);
+                .AnyAsync(c => c.BIT_ITC__BIT_ITMID == itemId);
 
             if (!hasColors)
             {
-                throw new InvalidOperationException($"Item with Id {itemId} must have at least one color.");
+                throw new BusinessRuleException($"Item with Id {itemId} must have at least one color.");
             }
         }
 
@@ -56,8 +57,8 @@ namespace MarkaziaBITStore.Application.Services
 
             var itemsWithColors = await _itemColorService
                 .GetAllAsQueryable()
-                .Where(c => itemIds.Contains(c.BitItcBitItmid))
-                .Select(c => c.BitItcBitItmid)
+                .Where(c => itemIds.Contains(c.BIT_ITC__BIT_ITMID))
+                .Select(c => c.BIT_ITC__BIT_ITMID)
                 .Distinct()
                 .ToListAsync();
 
@@ -66,21 +67,20 @@ namespace MarkaziaBITStore.Application.Services
             if (itemsWithoutColors.Any())
             {
                 logger.LogError($"ValidateItemsHaveColorsAsync - Items with Ids {string.Join(", ", itemsWithoutColors)} must have at least one color.");
-
-                throw new InvalidOperationException(
+                throw new BusinessRuleException(
                     $"Items with Ids {string.Join(", ", itemsWithoutColors)} must have at least one color."
                 );
             }
         }
 
-        public async Task<BitItmItem> GetBy(Expression<Func<BitItmItem, bool>> predicate,
+        public async Task<BIT_ITM_Items> GetBy(Expression<Func<BIT_ITM_Items, bool>> predicate,
         bool asNoTracking = true,
         bool IgnoreQueryFilters = false,
-        Func<IQueryable<BitItmItem>, IQueryable<BitItmItem>> include = null)
+        Func<IQueryable<BIT_ITM_Items>, IQueryable<BIT_ITM_Items>> include = null)
         {
             try
             {
-                IQueryable<BitItmItem> query = _bitStoreDbContext.BitItmItems;
+                IQueryable<BIT_ITM_Items> query = _bitStoreDbContext.BIT_ITM_Items;
 
                 if (include != null)
                     query = include(query);
@@ -97,16 +97,16 @@ namespace MarkaziaBITStore.Application.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error retrieving entity of type {EntityType}", typeof(BitItmItem).Name);
+                logger.LogError(ex, "Error retrieving entity of type {EntityType}", typeof(BIT_ITM_Items).Name);
                 throw;
             }
         }
 
-        public  BitItmItem GetById(object id)
+        public  BIT_ITM_Items GetById(object id)
         {
             try
             {
-                var ent = _bitStoreDbContext.BitItmItems;
+                var ent = _bitStoreDbContext.BIT_ITM_Items;
                 var item = ent.Find(id);
 
                 if (item == null)
@@ -118,20 +118,20 @@ namespace MarkaziaBITStore.Application.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error retrieving entity by ID of type {EntityType}", typeof(BitItmItem).Name);
+                logger.LogError(ex, "Error retrieving entity by ID of type {EntityType}", typeof(BIT_ITM_Items).Name);
                 throw;
             }
         }
 
-        public async Task<List<BitItmItem>> GetByListAsync(
-         Expression<Func<BitItmItem, bool>> predicate,
+        public async Task<List<BIT_ITM_Items>> GetByListAsync(
+         Expression<Func<BIT_ITM_Items, bool>> predicate,
          bool asNoTracking = true,
          bool ignoreQueryFilters = false,
-         params Expression<Func<BitItmItem, object>>[] includeProperties)
+         params Expression<Func<BIT_ITM_Items, object>>[] includeProperties)
         {
             try
             {
-                IQueryable<BitItmItem> query = _bitStoreDbContext.BitItmItems;
+                IQueryable<BIT_ITM_Items> query = _bitStoreDbContext.BIT_ITM_Items;
 
                 if (includeProperties != null && includeProperties.Any())
                 {
@@ -154,19 +154,19 @@ namespace MarkaziaBITStore.Application.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error retrieving list of entities of type {EntityType}", typeof(BitItmItem).Name);
+                logger.LogError(ex, "Error retrieving list of entities of type {EntityType}", typeof(BIT_ITM_Items).Name);
                 throw;
             }
         }
 
 
-        public async Task<List<TResult>> GetByListWithSelector<TResult>(Expression<Func<BitItmItem, TResult>> selector,
-            Expression<Func<BitItmItem, bool>> predicate, bool asNoTracking, bool IgnoreQueryFilters,
-            params Expression<Func<BitItmItem, object>>[] includeProperties)
+        public async Task<List<TResult>> GetByListWithSelector<TResult>(Expression<Func<BIT_ITM_Items, TResult>> selector,
+            Expression<Func<BIT_ITM_Items, bool>> predicate, bool asNoTracking, bool IgnoreQueryFilters,
+            params Expression<Func<BIT_ITM_Items, object>>[] includeProperties)
         {
             try
             {
-                IQueryable<BitItmItem> query =  _bitStoreDbContext.BitItmItems
+                IQueryable<BIT_ITM_Items> query =  _bitStoreDbContext.BIT_ITM_Items
                     .Where(predicate);
 
                 if (includeProperties != null && includeProperties.Count() > 0)
@@ -187,60 +187,72 @@ namespace MarkaziaBITStore.Application.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error retrieving list with selector of type {EntityType}", typeof(BitItmItem).Name);
+                logger.LogError(ex, "Error retrieving list with selector of type {EntityType}", typeof(BIT_ITM_Items).Name);
                 throw;
             }
         }
 
 
-        public List<BitItmItem> GetAll(bool asNoTracking = true)
+        public List<BIT_ITM_Items> GetAll(bool asNoTracking = true)
         {
-            IQueryable<BitItmItem> query = asNoTracking ? _bitStoreDbContext.BitItmItems.AsNoTracking() : _bitStoreDbContext.BitItmItems;
+            IQueryable<BIT_ITM_Items> query = asNoTracking ? _bitStoreDbContext.BIT_ITM_Items.AsNoTracking() : _bitStoreDbContext.BIT_ITM_Items;
 
             return query.ToList();
         }
 
-        public IQueryable<BitItmItem> GetAllAsQueryable(bool asNoTracking = true)
+        public IQueryable<BIT_ITM_Items> GetAllAsQueryable(bool asNoTracking = true)
         {
-            IQueryable<BitItmItem> query = asNoTracking ? _bitStoreDbContext.BitItmItems.AsQueryable().AsNoTracking() : 
-                _bitStoreDbContext.BitItmItems.AsQueryable();
+            IQueryable<BIT_ITM_Items> query = asNoTracking ? _bitStoreDbContext.BIT_ITM_Items.AsQueryable().AsNoTracking() : 
+                _bitStoreDbContext.BIT_ITM_Items.AsQueryable();
 
             return query;
         }
 
-        public  async Task<BitItmItem> AddAsync(BitItmItem entity)
+        public async Task<BIT_ITM_Items> AddAsync(
+          BIT_ITM_Items entity,
+          List<ItemColortIncludeDto> colors)
         {
             using var transaction = await _bitStoreDbContext.Database.BeginTransactionAsync();
 
             try
             {
-                _bitStoreDbContext.BitItmItems.Add(entity);
+                _bitStoreDbContext.BIT_ITM_Items.Add(entity);
                 await _bitStoreDbContext.SaveChangesAsync();
 
-                await ValidateItemHasColorsAsync(entity.BitItmId);
+                if (colors == null || !colors.Any())
+                    throw new BusinessRuleException($"Item with Name  Ar:{entity.BIT_ITM_NameEN}/En:{entity.BIT_ITM_NameAR} must have at least one color.");
+
+                var colorEntities = colors.Select(c => new BIT_ITC_ItemsColor
+                {
+                    BIT_ITC__BIT_ITMID = entity.BIT_ITM_ID,
+                    BIT_ITC__BIT_COLID = c.ColorId,
+                    BIT_ITC_Status = c.Status
+                }).ToList();
+
+                _bitStoreDbContext.BIT_ITC_ItemsColor.AddRange(colorEntities);
+                await _bitStoreDbContext.SaveChangesAsync();
 
                 await transaction.CommitAsync();
-
                 return entity;
             }
             catch (Exception ex)
             {
                 await transaction.RollbackAsync();
-                logger.LogError(ex, "Error adding entity of type {EntityType}", typeof(BitItmItem).Name);
+                logger.LogError(ex, "Error adding item with colors of type {EntityType}", typeof(BIT_ITM_Items).Name);
                 throw;
             }
         }
 
-        public bool Any(Expression<Func<BitItmItem, bool>> predicate)
+        public bool Any(Expression<Func<BIT_ITM_Items, bool>> predicate)
         {
             try
             {
-                var result = _bitStoreDbContext.BitItmItems.Any(predicate);
+                var result = _bitStoreDbContext.BIT_ITM_Items.Any(predicate);
                 return result;
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error checking existence of entity of type {EntityType}", typeof(BitItmItem).Name);
+                logger.LogError(ex, "Error checking existence of entity of type {EntityType}", typeof(BIT_ITM_Items).Name);
                 throw;
             }
         }
@@ -253,44 +265,44 @@ namespace MarkaziaBITStore.Application.Services
             try
             {
 
-                var entities = items.Select(request => new BitItmItem
+                var entities = items.Select(request => new BIT_ITM_Items
                 {
-                    BitItmBitCatid = request.CategoryId,
-                    BitItmNameEn = request.NameEn,
-                    BitItmNameAr = request.NameAr,
-                    BitItmDescriptionEn = request.DescriptionEn,
-                    BitItmDescriptionAr = request.DescriptionAr,
-                    BitItmPoints = request.Points,
-                    BitItmStatus = request.Status,
-                    BitItmBitUsridEnterUser = AddedBy,
-                    BitItmEnterDate = DateOnly.FromDateTime(DateTime.Now),
-                    BitItmEnterTime = TimeOnly.FromDateTime(DateTime.Now)
+                    BIT_ITM__BIT_CATID = request.CategoryId,
+                    BIT_ITM_NameEN = request.NameEn,
+                    BIT_ITM_NameAR = request.NameAr,
+                    BIT_ITM_DescriptionEN = request.DescriptionEn,
+                    BIT_ITM_DescriptionAR = request.DescriptionAr,
+                    BIT_ITM_Points = request.Points,
+                    BIT_ITM_Status = request.Status,
+                    BIT_ITM__MAS_USRID_EnterUser = AddedBy,
+                    BIT_ITM_EnterDate = DateOnly.FromDateTime(DateTime.Now),
+                    BIT_ITM_EnterTime = TimeOnly.FromDateTime(DateTime.Now)
                 }).ToList();
 
 
-                _bitStoreDbContext.BitItmItems.AddRange(entities);
+                _bitStoreDbContext.BIT_ITM_Items.AddRange(entities);
                 await _bitStoreDbContext.SaveChangesAsync();
 
-                var itemIds = entities.Select(e => e.BitItmId).ToList();
+                var itemIds = entities.Select(e => e.BIT_ITM_ID).ToList();
                 await ValidateItemsHaveColorsAsync(itemIds);
 
                 await transaction.CommitAsync();
 
                 return entities.Select(item => new ItemResponseDto
                 {
-                    Id = item.BitItmId,
-                    NameEn = item.BitItmNameEn,
-                    NameAr = item.BitItmNameAr,
-                    DescriptionEn = item.BitItmDescriptionEn,
-                    DescriptionAr = item.BitItmDescriptionAr,
-                    Points = item.BitItmPoints,
-                    Status = item.BitItmStatus
+                    Id = item.BIT_ITM_ID,
+                    NameEn = item.BIT_ITM_NameEN,
+                    NameAr = item.BIT_ITM_NameAR,
+                    DescriptionEn = item.BIT_ITM_DescriptionEN,
+                    DescriptionAr = item.BIT_ITM_DescriptionAR,
+                    Points = item.BIT_ITM_Points,
+                    Status = item.BIT_ITM_Status
                 }).ToList();
             }
             catch (Exception ex)
             {
                 await transaction.RollbackAsync();
-                logger.LogError(ex, "Error adding entities of type {EntityType}", typeof(BitItmItem).Name);
+                logger.LogError(ex, "Error adding entities of type {EntityType}", typeof(BIT_ITM_Items).Name);
                 throw;
             }
         }
@@ -304,33 +316,33 @@ namespace MarkaziaBITStore.Application.Services
             {
                 var itemIds = itemUpdates.Select(r => r.Id).ToList();
                 var existingItems = await GetAllAsQueryable()
-                    .Where(i => itemIds.Contains(i.BitItmId))
+                    .Where(i => itemIds.Contains(i.BIT_ITM_ID))
                     .ToListAsync();
 
                 if (existingItems.Count != itemUpdates.Count())
                 {
-                    var existingIds = existingItems.Select(i => i.BitItmId).ToHashSet();
+                    var existingIds = existingItems.Select(i => i.BIT_ITM_ID).ToHashSet();
                     var missingIds = itemIds.Except(existingIds).ToList();
                     throw new KeyNotFoundException($"Items with Ids {string.Join(", ", missingIds)} not found.");
                 }
 
                 foreach (var item in existingItems)
                 {
-                    var request = itemUpdates.First(r => r.Id == item.BitItmId);
-                    item.BitItmBitCatid = request.CategoryId;
-                    item.BitItmNameEn = request.NameEn;
-                    item.BitItmNameAr = request.NameAr;
-                    item.BitItmDescriptionEn = request.DescriptionEn;
-                    item.BitItmDescriptionAr = request.DescriptionAr;
-                    item.BitItmPoints = request.Points;
-                    item.BitItmStatus = request.Status;
-                    item.BitItmBitUsridModUser = ModifedBy;
-                    item.BitItmModDate = DateOnly.FromDateTime(DateTime.Now);
-                    item.BitItmModTime = TimeOnly.FromDateTime(DateTime.Now);
+                    var request = itemUpdates.First(r => r.Id == item.BIT_ITM_ID);
+                    item.BIT_ITM__BIT_CATID = request.CategoryId;
+                    item.BIT_ITM_NameEN = request.NameEn;
+                    item.BIT_ITM_NameAR = request.NameAr;
+                    item.BIT_ITM_DescriptionEN = request.DescriptionEn;
+                    item.BIT_ITM_DescriptionAR = request.DescriptionAr;
+                    item.BIT_ITM_Points = request.Points;
+                    item.BIT_ITM_Status = request.Status;
+                    item.BIT_ITM__MAS_USRID_ModUser = ModifedBy;
+                    item.BIT_ITM_ModDate = DateOnly.FromDateTime(DateTime.Now);
+                    item.BIT_ITM_ModTime = TimeOnly.FromDateTime(DateTime.Now);
                 }
 
 
-                _bitStoreDbContext.BitItmItems.UpdateRange(existingItems);
+                _bitStoreDbContext.BIT_ITM_Items.UpdateRange(existingItems);
                 await _bitStoreDbContext.SaveChangesAsync();
 
                 await ValidateItemsHaveColorsAsync(itemIds);
@@ -341,16 +353,16 @@ namespace MarkaziaBITStore.Application.Services
             catch (Exception ex)
             {
                 await transaction.RollbackAsync();
-                logger.LogError(ex, "Error updating entities of type {EntityType}", typeof(BitItmItem).Name);
+                logger.LogError(ex, "Error updating entities of type {EntityType}", typeof(BIT_ITM_Items).Name);
                 throw;
             }
         }
 
-        public  async Task EditAsync(BitItmItem entity)
+        public  async Task EditAsync(BIT_ITM_Items entity)
         {
             try
             {
-                await ValidateItemHasColorsAsync(entity.BitItmId);
+                await ValidateItemHasColorsAsync(entity.BIT_ITM_ID);
 
                 _bitStoreDbContext.Entry(entity).State = EntityState.Detached;
                 _bitStoreDbContext.Update(entity);
@@ -359,7 +371,7 @@ namespace MarkaziaBITStore.Application.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error editing entity of type {EntityType}", typeof(BitItmItem).Name);
+                logger.LogError(ex, "Error editing entity of type {EntityType}", typeof(BIT_ITM_Items).Name);
                 throw;
             }
         }
@@ -367,14 +379,14 @@ namespace MarkaziaBITStore.Application.Services
 
         public async Task<PagingResult<GetItemsListResult>> GetItemsList(GetItemsListParam param)
         {
-            var itemIQ = _bitStoreDbContext.BitItmItems
+            var itemIQ = _bitStoreDbContext.BIT_ITM_Items
                 .Select(item => new GetItemsListResult
                 {
-                    ItemID = item.BitItmId,
-                    NameEn = item.BitItmNameEn,
-                    NameAr = item.BitItmNameAr,
-                    Points = item.BitItmPoints,
-                    CategoryId = item.BitItmBitCat != null ? item.BitItmBitCatid : null,
+                    ItemID = item.BIT_ITM_ID,
+                    NameEn = item.BIT_ITM_NameEN,
+                    NameAr = item.BIT_ITM_NameAR,
+                    Points = item.BIT_ITM_Points,
+                    CategoryId = item.BIT_ITM__BIT_CAT != null ? item.BIT_ITM__BIT_CATID : null,
                 });
 
             // Apply filters

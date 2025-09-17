@@ -3,7 +3,7 @@ using MarkaziaBITStore.Application.Contracts.User;
 using MarkaziaBITStore.Application.DTOs.PagingParamDTOs;
 using MarkaziaBITStore.Application.DTOs.RequestDTOs;
 using MarkaziaBITStore.Application.DTOs.ResultDTOs;
-using MarkaziaBITStore.Application.Entites;
+using MarkaziaBITStore.Application.Entities;
 using MarkaziaBITStore.Application.Services;
 using MarkaziaBITStore.Application.DTOs.ResponseDTOs;
 using MarkaziaWebCommon.Models;
@@ -69,32 +69,32 @@ namespace MarkaziaBITStore.Controllers
         public async Task<IActionResult> GetById(int id)
         {
             var entity = await _colorService.GetBy(
-                x => x.BitColId == id,
-                include: q => q.Include(c => c.BitItcItemsColors)
-                                         .ThenInclude(ic => ic.BitItcBitItm)
+                x => x.BIT_COL_ID == id,
+                include: q => q.Include(c => c.BIT_ITC_ItemsColor)
+                                         .ThenInclude(ic => ic.BIT_ITC__BIT_ITM)
             );
 
             if (entity == null) return NotFound();
 
             var response = new ColorResponseDto
             {
-                Id = entity.BitColId,
-                NameEn = entity.BitColNameEn,
-                NameAr = entity.BitColNameAr,
-                HexCode = entity.BitColHexCode,
-                ItemsColors = entity.BitItcItemsColors.Select(ic => new ItemColorResponseDto
+                Id = entity.BIT_COL_ID,
+                NameEn = entity.BIT_COL_NameEN,
+                NameAr = entity.BIT_COL_NameAR,
+                HexCode = entity.BIT_COL_HexCode,
+                ItemsColors = entity.BIT_ITC_ItemsColor.Select(ic => new ItemColorResponseDto
                 {
-                    Id = ic.BitItcId,
-                    Status = ic.BitItcStatus,
+                    Id = ic.BIT_ITC_ID,
+                    Status = ic.BIT_ITC_Status,
                     Item = new ItemResponseDto
                     {
-                        Id = ic.BitItcBitItm.BitItmId,
-                        NameEn = ic.BitItcBitItm.BitItmNameEn,
-                        NameAr = ic.BitItcBitItm.BitItmNameAr,
-                        DescriptionEn = ic.BitItcBitItm.BitItmDescriptionEn,
-                        DescriptionAr = ic.BitItcBitItm.BitItmDescriptionAr,
-                        Points = ic.BitItcBitItm.BitItmPoints,
-                        Status = ic.BitItcBitItm.BitItmStatus
+                        Id = ic.BIT_ITC__BIT_ITM.BIT_ITM_ID,
+                        NameEn = ic.BIT_ITC__BIT_ITM.BIT_ITM_NameEN,
+                        NameAr = ic.BIT_ITC__BIT_ITM.BIT_ITM_NameAR,
+                        DescriptionEn = ic.BIT_ITC__BIT_ITM.BIT_ITM_DescriptionEN,
+                        DescriptionAr = ic.BIT_ITC__BIT_ITM.BIT_ITM_DescriptionAR,
+                        Points = ic.BIT_ITC__BIT_ITM.BIT_ITM_Points,
+                        Status = ic.BIT_ITC__BIT_ITM.BIT_ITM_Status
                     }
                 }).ToList()
             };
@@ -108,41 +108,41 @@ namespace MarkaziaBITStore.Controllers
         {
             if (request == null) return BadRequest();
 
-            var entity = new BitColColor
+            var entity = new BIT_COL_Colors
             {
-                BitColNameEn = request.NameEn,
-                BitColNameAr = request.NameAr,
-                BitColHexCode = request.HexCode,
-                BitColBitUsridEnterUser = currentUserID,
-                BitColEnterDate = DateOnly.FromDateTime(DateTime.Now),
-                BitColEnterTime = TimeOnly.FromDateTime(DateTime.Now)
+                BIT_COL_NameEN = request.NameEn,
+                BIT_COL_NameAR = request.NameAr,
+                BIT_COL_HexCode = request.HexCode,
+                BIT_COL__MAS_USRID_EnterUser = currentUserID,
+                BIT_COL_EnterDate = DateOnly.FromDateTime(DateTime.Now),
+                BIT_COL_EnterTime = TimeOnly.FromDateTime(DateTime.Now)
             };
 
             var addedColor = await _colorService.AddAsync(entity);
 
             var response = new ColorResponseDto
             {
-                Id = addedColor.BitColId,
-                NameEn = addedColor.BitColNameEn,
-                NameAr = addedColor.BitColNameAr,
-                HexCode = addedColor.BitColHexCode
+                Id = addedColor.BIT_COL_ID,
+                NameEn = addedColor.BIT_COL_NameEN,
+                NameAr = addedColor.BIT_COL_NameAR,
+                HexCode = addedColor.BIT_COL_HexCode
             };
 
-            return CreatedAtAction(nameof(GetById), new { id = addedColor.BitColId }, response);
+            return CreatedAtAction(nameof(GetById), new { id = addedColor.BIT_COL_ID }, response);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] ColorRequestDto request)
         {
-            var entity = await _colorService.GetBy(x => x.BitColId == id);
+            var entity = await _colorService.GetBy(x => x.BIT_COL_ID == id);
             if (entity == null) return NotFound();
 
-            entity.BitColNameEn = request.NameEn;
-            entity.BitColNameAr = request.NameAr;
-            entity.BitColHexCode = request.HexCode;
-            entity.BitColBitUsridModUser = currentUserID;
-            entity.BitColModDate = DateOnly.FromDateTime(DateTime.Now);
-            entity.BitColModTime = TimeOnly.FromDateTime(DateTime.Now);
+            entity.BIT_COL_NameEN = request.NameEn;
+            entity.BIT_COL_NameAR = request.NameAr;
+            entity.BIT_COL_HexCode = request.HexCode;
+            entity.BIT_COL__MAS_USRID_ModUser = currentUserID;
+            entity.BIT_COL_ModDate = DateOnly.FromDateTime(DateTime.Now);
+            entity.BIT_COL_ModTime = TimeOnly.FromDateTime(DateTime.Now);
 
             await _colorService.EditAsync(entity);
             return NoContent();
@@ -151,13 +151,13 @@ namespace MarkaziaBITStore.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var entity = await _colorService.GetBy(x => x.BitColId == id);
+            var entity = await _colorService.GetBy(x => x.BIT_COL_ID == id);
             if (entity == null) return NotFound();
 
-            entity.BitColCancelled = true;
-            entity.BitColBitUsridCancelledUser = currentUserID;
-            entity.BitColCancelledDate = DateOnly.FromDateTime(DateTime.Now);
-            entity.BitColCancelledTime = TimeOnly.FromDateTime(DateTime.Now);
+            entity.BIT_COL_Cancelled = true;
+            entity.BIT_COL__MAS_USRID_CancelledUser = currentUserID;
+            entity.BIT_COL_CancelledDate = DateOnly.FromDateTime(DateTime.Now);
+            entity.BIT_COL_CancelledTime = TimeOnly.FromDateTime(DateTime.Now);
 
             await _colorService.EditAsync(entity);
             return NoContent();
@@ -168,19 +168,19 @@ namespace MarkaziaBITStore.Controllers
         public async Task<IActionResult> GetItemsByColor(int id)
         {
             var itemsColors = await _IitemColorService.GetByListAsync(
-                x => x.BitItcBitColid == id,
-                includeProperties : x => x.BitItcBitItm
+                x => x.BIT_ITC__BIT_COLID == id,
+                includeProperties : x => x.BIT_ITC__BIT_ITM
             );
 
             var itemsList = itemsColors.Select(ic => new ItemResponseDto
             {
-                Id = ic.BitItcBitItm.BitItmId,
-                NameEn = ic.BitItcBitItm.BitItmNameEn,
-                NameAr = ic.BitItcBitItm.BitItmNameAr,
-                DescriptionEn = ic.BitItcBitItm.BitItmDescriptionEn,
-                DescriptionAr = ic.BitItcBitItm.BitItmDescriptionAr,
-                Points = ic.BitItcBitItm.BitItmPoints,
-                Status = ic.BitItcBitItm.BitItmStatus
+                Id = ic.BIT_ITC__BIT_ITM.BIT_ITM_ID,
+                NameEn = ic.BIT_ITC__BIT_ITM.BIT_ITM_NameEN,
+                NameAr = ic.BIT_ITC__BIT_ITM.BIT_ITM_NameAR,
+                DescriptionEn = ic.BIT_ITC__BIT_ITM.BIT_ITM_DescriptionEN,
+                DescriptionAr = ic.BIT_ITC__BIT_ITM.BIT_ITM_DescriptionAR,
+                Points = ic.BIT_ITC__BIT_ITM.BIT_ITM_Points,
+                Status = ic.BIT_ITC__BIT_ITM.BIT_ITM_Status
             }).ToList();
 
             if (!itemsList.Any()) return NotFound();

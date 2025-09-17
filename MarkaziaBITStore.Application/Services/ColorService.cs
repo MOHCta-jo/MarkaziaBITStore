@@ -2,7 +2,7 @@
 using MarkaziaBITStore.Application.Contracts;
 using MarkaziaBITStore.Application.DTOs.PagingParamDTOs;
 using MarkaziaBITStore.Application.DTOs.ResultDTOs;
-using MarkaziaBITStore.Application.Entites;
+using MarkaziaBITStore.Application.Entities;
 using MarkaziaBITStore.Application.Generic;
 using MarkaziaWebCommon.Models;
 using Microsoft.EntityFrameworkCore;
@@ -31,14 +31,14 @@ namespace MarkaziaBITStore.Application.Services
         }
 
 
-        public async Task<BitColColor> GetBy(Expression<Func<BitColColor, bool>> predicate,
+        public async Task<BIT_COL_Colors> GetBy(Expression<Func<BIT_COL_Colors, bool>> predicate,
         bool asNoTracking = true,
         bool IgnoreQueryFilters = false,
-        Func<IQueryable<BitColColor>, IQueryable<BitColColor>> include = null)
+        Func<IQueryable<BIT_COL_Colors>, IQueryable<BIT_COL_Colors>> include = null)
         {
             try
             {
-                IQueryable<BitColColor> query = _bitStoreDbContext.BitColColors;
+                IQueryable<BIT_COL_Colors> query = _bitStoreDbContext.BIT_COL_Colors;
 
                 if (include != null)
                     query = include(query);
@@ -55,16 +55,16 @@ namespace MarkaziaBITStore.Application.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error retrieving entity of type {EntityType}", typeof(BitColColor).Name);
+                logger.LogError(ex, "Error retrieving entity of type {EntityType}", typeof(BIT_COL_Colors).Name);
                 throw;
             }
         }
 
-        public BitColColor GetById(object id)
+        public BIT_COL_Colors GetById(object id)
         {
             try
             {
-                var ent = _bitStoreDbContext.BitColColors;
+                var ent = _bitStoreDbContext.BIT_COL_Colors;
                 var item = ent.Find(id);
 
                 if (item == null)
@@ -76,20 +76,20 @@ namespace MarkaziaBITStore.Application.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error retrieving entity by ID of type {EntityType}", typeof(BitColColor).Name);
+                logger.LogError(ex, "Error retrieving entity by ID of type {EntityType}", typeof(BIT_COL_Colors).Name);
                 throw;
             }
         }
 
-        public async Task<List<BitColColor>> GetByListAsync(
-         Expression<Func<BitColColor, bool>> predicate,
+        public async Task<List<BIT_COL_Colors>> GetByListAsync(
+         Expression<Func<BIT_COL_Colors, bool>> predicate,
          bool asNoTracking = true,
          bool ignoreQueryFilters = false,
-         params Expression<Func<BitColColor, object>>[] includeProperties)
+         params Expression<Func<BIT_COL_Colors, object>>[] includeProperties)
         {
             try
             {
-                IQueryable<BitColColor> query = _bitStoreDbContext.BitColColors;
+                IQueryable<BIT_COL_Colors> query = _bitStoreDbContext.BIT_COL_Colors;
 
                 if (includeProperties != null && includeProperties.Any())
                 {
@@ -112,19 +112,19 @@ namespace MarkaziaBITStore.Application.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error retrieving list of entities of type {EntityType}", typeof(BitColColor).Name);
+                logger.LogError(ex, "Error retrieving list of entities of type {EntityType}", typeof(BIT_COL_Colors).Name);
                 throw;
             }
         }
 
 
-        public async Task<List<TResult>> GetByListWithSelector<TResult>(Expression<Func<BitColColor, TResult>> selector,
-            Expression<Func<BitColColor, bool>> predicate, bool asNoTracking, bool IgnoreQueryFilters,
-            params Expression<Func<BitColColor, object>>[] includeProperties)
+        public async Task<List<TResult>> GetByListWithSelector<TResult>(Expression<Func<BIT_COL_Colors, TResult>> selector,
+            Expression<Func<BIT_COL_Colors, bool>> predicate, bool asNoTracking, bool IgnoreQueryFilters,
+            params Expression<Func<BIT_COL_Colors, object>>[] includeProperties)
         {
             try
             {
-                IQueryable<BitColColor> query = _bitStoreDbContext.BitColColors
+                IQueryable<BIT_COL_Colors> query = _bitStoreDbContext.BIT_COL_Colors
                     .Where(predicate);
 
                 if (includeProperties != null && includeProperties.Count() > 0)
@@ -145,40 +145,40 @@ namespace MarkaziaBITStore.Application.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error retrieving list with selector of type {EntityType}", typeof(BitColColor).Name);
+                logger.LogError(ex, "Error retrieving list with selector of type {EntityType}", typeof(BIT_COL_Colors).Name);
                 throw;
             }
         }
 
 
-        public List<BitColColor> GetAll(bool asNoTracking = true)
+        public List<BIT_COL_Colors> GetAll(bool asNoTracking = true)
         {
-            IQueryable<BitColColor> query = asNoTracking ? _bitStoreDbContext.BitColColors.AsNoTracking() : _bitStoreDbContext.BitColColors;
+            IQueryable<BIT_COL_Colors> query = asNoTracking ? _bitStoreDbContext.BIT_COL_Colors.AsNoTracking() : _bitStoreDbContext.BIT_COL_Colors;
 
             return query.ToList();
         }
 
-        public IQueryable<BitColColor> GetAllAsQueryable(bool asNoTracking = true)
+        public IQueryable<BIT_COL_Colors> GetAllAsQueryable(bool asNoTracking = true)
         {
-            IQueryable<BitColColor> query = asNoTracking ? _bitStoreDbContext.BitColColors.AsQueryable().AsNoTracking() :
-                _bitStoreDbContext.BitColColors.AsQueryable();
+            IQueryable<BIT_COL_Colors> query = asNoTracking ? _bitStoreDbContext.BIT_COL_Colors.AsQueryable().AsNoTracking() :
+                _bitStoreDbContext.BIT_COL_Colors.AsQueryable();
 
             return query;
         }
 
-        public async Task<BitColColor> AddAsync(BitColColor entity)
+        public async Task<BIT_COL_Colors> AddAsync(BIT_COL_Colors entity)
         {
 
             try
             {
-                _bitStoreDbContext.BitColColors.Add(entity);
+                _bitStoreDbContext.BIT_COL_Colors.Add(entity);
                 await _bitStoreDbContext.SaveChangesAsync();
 
                 return entity;
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error adding entity of type {EntityType}", typeof(BitColColor).Name);
+                logger.LogError(ex, "Error adding entity of type {EntityType}", typeof(BIT_COL_Colors).Name);
                 throw;
             }
 
@@ -186,37 +186,37 @@ namespace MarkaziaBITStore.Application.Services
         }
 
 
-        public async Task AddRange(IEnumerable<BitColColor> entities)
+        public async Task AddRange(IEnumerable<BIT_COL_Colors> entities)
         {
             try
             {
-                await _bitStoreDbContext.BitColColors.AddRangeAsync(entities);
+                await _bitStoreDbContext.BIT_COL_Colors.AddRangeAsync(entities);
 
                 await _bitStoreDbContext.SaveChangesAsync();
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error adding range of entities of type {EntityType}", typeof(BitColColor).Name);
+                logger.LogError(ex, "Error adding range of entities of type {EntityType}", typeof(BIT_COL_Colors).Name);
                 throw;
             }
         }
 
-        public bool Any(Expression<Func<BitColColor, bool>> predicate)
+        public bool Any(Expression<Func<BIT_COL_Colors, bool>> predicate)
         {
             try
             {
-                var result = _bitStoreDbContext.BitColColors.Any(predicate);
+                var result = _bitStoreDbContext.BIT_COL_Colors.Any(predicate);
                 return result;
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error checking existence of entity of type {EntityType}", typeof(BitColColor).Name);
+                logger.LogError(ex, "Error checking existence of entity of type {EntityType}", typeof(BIT_COL_Colors).Name);
                 throw;
             }
         }
 
 
-        public async Task EditAsync(BitColColor entity)
+        public async Task EditAsync(BIT_COL_Colors entity)
         {
             try
             {
@@ -228,19 +228,19 @@ namespace MarkaziaBITStore.Application.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error editing entity of type {EntityType}", typeof(BitColColor).Name);
+                logger.LogError(ex, "Error editing entity of type {EntityType}", typeof(BIT_COL_Colors).Name);
                 throw;
             }
         }
 
-        public async Task EditRangeAsync(IEnumerable<BitColColor> entities)
+        public async Task EditRangeAsync(IEnumerable<BIT_COL_Colors> entities)
         {
             if (entities is null || !entities.Any())
                 return; 
 
             try
             {
-                _bitStoreDbContext.BitColColors.UpdateRange(entities);
+                _bitStoreDbContext.BIT_COL_Colors.UpdateRange(entities);
 
                 await _bitStoreDbContext.SaveChangesAsync();
             }
@@ -252,13 +252,13 @@ namespace MarkaziaBITStore.Application.Services
 
         public async Task<PagingResult<GetColorsListResult>> GetColorsList(GetColorsListParam param)
         {
-            var colorIQ = _bitStoreDbContext.BitColColors
+            var colorIQ = _bitStoreDbContext.BIT_COL_Colors
                 .Select(color => new GetColorsListResult
                 {
-                    ColorID = color.BitColId,
-                    NameEn = color.BitColNameEn,
-                    NameAr = color.BitColNameAr,
-                    HexCode = color.BitColHexCode
+                    ColorID = color.BIT_COL_ID,
+                    NameEn = color.BIT_COL_NameEN,
+                    NameAr = color.BIT_COL_NameAR,
+                    HexCode = color.BIT_COL_HexCode
                 });
 
             // Apply filters

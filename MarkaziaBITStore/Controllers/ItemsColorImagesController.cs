@@ -1,7 +1,7 @@
 ﻿using MarkaziaBITStore.Application.Contracts;
 using MarkaziaBITStore.Application.Contracts.User;
 using MarkaziaBITStore.Application.DTOs.RequestDTOs;
-using MarkaziaBITStore.Application.Entites;
+using MarkaziaBITStore.Application.Entities;
 using MarkaziaBITStore.Application.Services;
 using MarkaziaBITStore.Application.DTOs.ResponseDTOs;
 using Microsoft.AspNetCore.Mvc;
@@ -31,7 +31,7 @@ namespace MarkaziaBITStore.Controllers
         {
             // should use paging here
             var list = await _itemColorImageService.GetAllAsQueryable()
-                .Include(img => img.BitIciBitItc)
+                .Include(img => img.BIT_ICI__BIT_ITC)
                 .ToListAsync();
 
             return Ok(list);
@@ -42,19 +42,19 @@ namespace MarkaziaBITStore.Controllers
         public async Task<IActionResult> GetById(int id)
         {
             var entity = await _itemColorImageService.GetBy(
-                x => x.BitIciId == id,
-                include: q => q.Include(i => i.BitIciBitItc)
+                x => x.BIT_ICI_ID == id,
+                include: q => q.Include(i => i.BIT_ICI__BIT_ITC)
             );
 
             if (entity == null) return NotFound();
 
             var response = new ItemColorImageResponseDto
             {
-                Id = entity.BitIciId,
-                Sequence = entity.BitIciSequence,
-                ImageUrl = entity.BitIciImageUrl,
-                IsDefault = entity.BitIciIsDefault,
-                Status = entity.BitIciStatus
+                Id = entity.BIT_ICI_ID,
+                Sequence = entity.BIT_ICI_ScreenSequence,
+                ImageUrl = entity.BIT_ICI_ImageURL,
+                IsDefault = entity.BIT_ICI_IsDefault,
+                Status = entity.BIT_ICI_Status
             };
 
             return Ok(response);
@@ -66,45 +66,45 @@ namespace MarkaziaBITStore.Controllers
         {
             if (request == null) return BadRequest();
 
-            var entity = new BitIciItemsColorImage
+            var entity = new BIT_ICI_ItemsColorImages
             {
-                BitIciBitItcid = itemColorId,  
-                BitIciSequence = request.Sequence,
-                BitIciImageUrl = request.ImageUrl,
-                BitIciIsDefault = request.IsDefault,
-                BitIciStatus = request.Status,
-                BitIciBitUsridEnterUser = currentUserID,
-                BitIciEnterDate = DateOnly.FromDateTime(DateTime.Now),
-                BitIciEnterTime = TimeOnly.FromDateTime(DateTime.Now)
+                BIT_ICI__BIT_ITCID = itemColorId,  
+                BIT_ICI_ScreenSequence = request.Sequence,
+                BIT_ICI_ImageURL = request.ImageUrl,
+                BIT_ICI_IsDefault = request.IsDefault,
+                BIT_ICI_Status = request.Status,
+                BIT_ICI__MAS_USRID_EnterUser = currentUserID,
+                BIT_ICI_EnterDate = DateOnly.FromDateTime(DateTime.Now),
+                BIT_ICI_EnterTime = TimeOnly.FromDateTime(DateTime.Now)
             };
 
             var added = await _itemColorImageService.AddAsync(entity);
 
             var response = new ItemColorImageResponseDto
             {
-                Id = added.BitIciId,
-                Sequence = added.BitIciSequence,
-                ImageUrl = added.BitIciImageUrl,
-                IsDefault = added.BitIciIsDefault,
-                Status = added.BitIciStatus
+                Id = added.BIT_ICI_ID,
+                Sequence = added.BIT_ICI_ScreenSequence,
+                ImageUrl = added.BIT_ICI_ImageURL,
+                IsDefault = added.BIT_ICI_IsDefault,
+                Status = added.BIT_ICI_Status
             };
 
-            return CreatedAtAction(nameof(GetById), new { id = added.BitIciId }, response);
+            return CreatedAtAction(nameof(GetById), new { id = added.BIT_ICI_ID }, response);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] ItemColorImageRequestDto request)
         {
-            var entity = await _itemColorImageService.GetBy(x => x.BitIciId == id);
+            var entity = await _itemColorImageService.GetBy(x => x.BIT_ICI_ID == id);
             if (entity == null) return NotFound();
 
-            entity.BitIciSequence = request.Sequence;
-            entity.BitIciImageUrl = request.ImageUrl;
-            entity.BitIciIsDefault = request.IsDefault;
-            entity.BitIciStatus = request.Status;
-            entity.BitIciBitUsridModUser = currentUserID;
-            entity.BitIciModDate = DateOnly.FromDateTime(DateTime.Now);
-            entity.BitIciModTime = TimeOnly.FromDateTime(DateTime.Now);
+            entity.BIT_ICI_ScreenSequence = request.Sequence;
+            entity.BIT_ICI_ImageURL = request.ImageUrl;
+            entity.BIT_ICI_IsDefault = request.IsDefault;
+            entity.BIT_ICI_Status = request.Status;
+            entity.BIT_ICI__MAS_USRID_ModUser = currentUserID;
+            entity.BIT_ICI_ModDate = DateOnly.FromDateTime(DateTime.Now);
+            entity.BIT_ICI_ModTime = TimeOnly.FromDateTime(DateTime.Now);
 
             await _itemColorImageService.EditAsync(entity);
 
@@ -114,13 +114,13 @@ namespace MarkaziaBITStore.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var entity = await _itemColorImageService.GetBy(x => x.BitIciId == id);
+            var entity = await _itemColorImageService.GetBy(x => x.BIT_ICI_ID == id);
             if (entity == null) return NotFound();
 
-            entity.BitIciCancelled = true;
-            entity.BitIciBitUsridCancelledUser = currentUserID;
-            entity.BitIciCancelledDate = DateOnly.FromDateTime(DateTime.Now);
-            entity.BitIciCancelledTime = TimeOnly.FromDateTime(DateTime.Now);
+            entity.BIT_ICI_Cancelled = true;
+            entity.BIT_ICI__MAS_USRID_CancelledUser = currentUserID;
+            entity.BIT_ICI_CancelledDate = DateOnly.FromDateTime(DateTime.Now);
+            entity.BIT_ICI_CancelledTime = TimeOnly.FromDateTime(DateTime.Now);
 
             await _itemColorImageService.EditAsync(entity);
 
