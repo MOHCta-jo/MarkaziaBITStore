@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarkaziaBITStore.Applicatio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarkaziaWebCommon", "..\Markazia-Standards\MarkaziaWebCommon\MarkaziaWebCommon.csproj", "{BDBCB359-AD5D-B0FB-3F0F-1F6DBA591FC0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarkaziaBITStore.Shared", "MarkaziaBITStore.Shared\MarkaziaBITStore.Shared.csproj", "{DEA43B80-3C96-43E1-8BBF-B420505EE560}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{BDBCB359-AD5D-B0FB-3F0F-1F6DBA591FC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BDBCB359-AD5D-B0FB-3F0F-1F6DBA591FC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BDBCB359-AD5D-B0FB-3F0F-1F6DBA591FC0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DEA43B80-3C96-43E1-8BBF-B420505EE560}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DEA43B80-3C96-43E1-8BBF-B420505EE560}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DEA43B80-3C96-43E1-8BBF-B420505EE560}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DEA43B80-3C96-43E1-8BBF-B420505EE560}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

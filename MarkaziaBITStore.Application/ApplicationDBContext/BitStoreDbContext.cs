@@ -1,5 +1,5 @@
 ﻿using MarkaziaBITStore.Application.Entities;
-using MarkaziaWebCommon.Utils.CustomAttribute;
+using MarkaziaBITStore.Shared.CustomAttributes;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;

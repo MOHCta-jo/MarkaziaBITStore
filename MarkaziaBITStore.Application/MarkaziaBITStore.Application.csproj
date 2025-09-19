@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Markazia-Standards\MarkaziaWebCommon\MarkaziaWebCommon.csproj" />
+    <ProjectReference Include="..\MarkaziaBITStore.Shared\MarkaziaBITStore.Shared.csproj" />
   </ItemGroup>
 
 </Project>

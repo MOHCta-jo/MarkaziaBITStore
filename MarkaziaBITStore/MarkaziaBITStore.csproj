@@ -14,5 +14,6 @@
 	
 	<ItemGroup>
 	  <ProjectReference Include="..\MarkaziaBITStore.Application\MarkaziaBITStore.Application.csproj" />
+	  <ProjectReference Include="..\MarkaziaBITStore.Shared\MarkaziaBITStore.Shared.csproj" />
 	</ItemGroup>
 </Project>

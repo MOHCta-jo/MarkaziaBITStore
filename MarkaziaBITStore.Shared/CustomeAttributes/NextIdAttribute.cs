@@ -1,4 +1,4 @@
-﻿namespace MarkaziaBITStore.Application.CustomAttributes
+﻿namespace MarkaziaBITStore.Shared.CustomAttributes
 {
     [AttributeUsage(AttributeTargets.Property)]
     public class NextIdAttribute : Attribute

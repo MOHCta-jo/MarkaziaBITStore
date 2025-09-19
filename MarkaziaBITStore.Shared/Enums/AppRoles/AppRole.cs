@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace MarkaziaBITStore.Application.Enums.AppRoles
+namespace MarkaziaBITStore.Shared.Enums.AppRoles
 {
     public enum AppRole
     {

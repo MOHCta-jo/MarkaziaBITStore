@@ -1,4 +1,4 @@
-﻿using MarkaziaBITStore.Application.Enums.AppRoles;
+﻿using MarkaziaBITStore.Shared.Enums.AppRoles;
 using Microsoft.AspNetCore.Authorization;
 
 
@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 //[AuthorizeRoles(AppRole.Admin, AppRole.Manager)]
 //new Claim(ClaimTypes.Role, AppRole.Admin.ToString()) // "Admin" Added to JWT Claims
 
-namespace MarkaziaBITStore.Application.CustomAttributes
+namespace MarkaziaBITStore.Shared.CustomAttributes
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
     public class AuthorizeRolesAttribute : AuthorizeAttribute

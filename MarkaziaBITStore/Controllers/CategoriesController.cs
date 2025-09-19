@@ -7,8 +7,8 @@ using MarkaziaBITStore.Application.DTOs.ResultDTOs;
 using MarkaziaBITStore.Application.Entities;
 using MarkaziaBITStore.Application.DTOs.ResponseDTOs;
 using MarkaziaWebCommon.Models;
-using MarkaziaWebCommon.Utils.CustomAttribute;
-using MarkaziaWebCommon.Utils.Enums.AppRoles;
+using MarkaziaBITStore.Shared.CustomAttributes;
+using MarkaziaBITStore.Shared.Enums.AppRoles;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -82,7 +82,6 @@ namespace MarkaziaBITStore.Controllers
                 .GetBy(c => c.BIT_CAT_ID == id, true, false, c => c.Include(x=> x.BIT_ITM_Items));
 
             if (category == null) return NotFound();
-
 
             var dto = new CategoryResponseDto
             {
