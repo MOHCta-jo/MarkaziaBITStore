@@ -12,7 +12,6 @@ using MarkaziaWebCommon.Utils.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
-using static Grpc.Core.Metadata;
 
 namespace MarkaziaBITStore.Controllers
 {

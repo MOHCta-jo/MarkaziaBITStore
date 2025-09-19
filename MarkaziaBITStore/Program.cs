@@ -2,6 +2,7 @@
 //using MarkaziaBITStore.ApplicationDBContext;
 //using MarkaziaBITStore.Services;
 using MarkaziaBITStore.Application.ApplicationDBContext;
+using MarkaziaBITStore.Application.ExtentionServices;
 using MarkaziaBITStore.Application.Middleware;
 using MarkaziaBITStore.Settings;
 using MarkaziaWebCommon.Utils.Swagger;
@@ -22,7 +23,6 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-        builder.AddServiceDefaults();
 
         builder.Services.AddDbContext<BitStoreDbContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionVPN")));
@@ -124,7 +124,7 @@ public class Program
 
         var app = builder.Build();
 
-        app.MapDefaultEndpoints();
+        //app.MapDefaultEndpoints();
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())

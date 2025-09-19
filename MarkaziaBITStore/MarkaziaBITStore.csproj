@@ -5,14 +5,14 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\MarkaziaBITStore.ServiceDefaults\MarkaziaBITStore.ServiceDefaults.csproj" />
-  </ItemGroup>
 	
 	<PropertyGroup>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<NoWarn>$(NoWarn);1591</NoWarn>
 		<!-- Optional: suppress missing XML comments warnings -->
 	</PropertyGroup>
+	
+	<ItemGroup>
+	  <ProjectReference Include="..\MarkaziaBITStore.Application\MarkaziaBITStore.Application.csproj" />
+	</ItemGroup>
 </Project>
